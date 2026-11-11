@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meson — Text your factory</title>
+<meta name="description" content="Meson is the AI that runs garment factories. Fabric comes in short, a line falls behind, a buyer moves a date. You hear at 6am, with the fix already done.">
+<meta property="og:title" content="Meson — Text your factory">
+<meta property="og:description" content="AI that runs garment factories. Live in plants that make for the brands you wear.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 210 90'%3E%3Cpath d='M30 6h150a8 8 0 0 1 8 8v62a8 8 0 0 1-8 8H30a8 8 0 0 1-8-8V44L8 32 22 20v-6a8 8 0 0 1 8-8z' fill='%23FFF3E8' stroke='%23111' stroke-width='6'/%3E%3Ctext x='108' y='62' text-anchor='middle' font-family='Georgia,serif' font-size='56' fill='%23111'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&family=Instrument+Serif&display=swap">
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{margin:0;background:#FFFFFF;color:#111111;font-family:'DM Sans',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#111111}a:hover{color:#FF5A1F}
+h1,h2,h3,p{margin:0}
+.mono{font-family:'DM Mono',Menlo,monospace}
+.muted{color:#6B6B6B}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;background:#111111;color:#FFFFFF;text-decoration:none;font-weight:500;font-size:14px;border-radius:6px;border:1px solid #111111;font-family:inherit;cursor:pointer}
+.btn:hover{background:#FF5A1F;border-color:#FF5A1F;color:#FFFFFF}
+.btn.ghost{background:transparent;color:#111111;border-color:#D9D9D9}
+.btn.ghost:hover{border-color:#111111;background:transparent;color:#111111}
+.label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6B6B6B}
+.hair{height:1px;background:#E8E8E8}
+.nav a{text-decoration:none;font-size:14px;color:#444444}
+.nav a:hover{color:#111111}
+.acc{color:#FF5A1F}
+.ph{background:#FFF3E8;border-bottom:1px dashed #FF5A1F;padding:0 3px;color:#111111}
+/* production board */
+.row{display:grid;grid-template-columns:110px 1fr 70px 130px 80px;gap:14px;padding:12px 0;border-top:1px solid #EEEEEE;font-size:13.5px;align-items:center}
+.row.head{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#8A8A8A;border-top:0}
+.stage{display:flex;gap:3px;align-items:center}
+.stage i{width:18px;height:7px;border-radius:2px;background:#E8E8E8}
+.stage i.d{background:#111111}
+.stage i.c{background:#1F6F5B}
+.stage i.w{background:#B7791F}
+.chip{font-family:'DM Mono',monospace;font-size:10.5px;color:#1F6F5B;margin-left:8px;white-space:nowrap}
+.chip.w{color:#B7791F}
+
+
+.dot{width:7px;height:7px;border-radius:50%;background:#25D366;display:inline-block;box-shadow:0 0 0 3px rgba(37,211,102,.18)}
+.kpi{display:flex;flex-direction:column;gap:2px}
+.kpi b{font-size:22px;font-weight:500;letter-spacing:-.02em;line-height:1}
+.kpi span{font-size:12.5px;color:#6B6B6B}
+.daypill{align-self:center;font-family:'DM Mono',monospace;font-size:10.5px;color:#8A8A8A;background:#FFFFFF;border-radius:8px;padding:3px 9px;margin-bottom:4px;box-shadow:0 1px 1px rgba(17,17,17,.05)}
+.typing{align-self:flex-start;display:inline-flex;gap:4px;background:#FFFFFF;border-radius:14px;border-bottom-left-radius:4px;padding:11px 14px;box-shadow:0 1px 1px rgba(17,17,17,.05)}
+.typing i{width:6px;height:6px;border-radius:50%;background:#B0B0A8;animation:bl 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.board{border:1px solid #E3E3E3;border-radius:14px;overflow:hidden;background:#FFFFFF;box-shadow:0 1px 2px rgba(17,17,17,.04)}
+.boardhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding:18px 24px;border-bottom:1px solid #EEEEEE;background:#FAFAF8}
+.pill{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.04em;padding:4px 9px;border-radius:12px;background:#E8F3EF;color:#1F6F5B}
+.pill.w{background:#FFF4E0;color:#9A6414}
+.row.hl{background:#FFF8F2;margin:0 -24px;padding-left:24px;padding-right:24px;border-left:3px solid #FF5A1F}
+.boardfoot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding:18px 24px 20px;border-top:1px solid #111111;background:#FFFFFF}
+.boardfoot p{font-size:13.5px;line-height:1.5;color:#444444;margin-top:6px}
+
+.eyebrow{font-size:15px;color:#6B6B6B;margin:0;letter-spacing:-.005em}
+h1.big{font-size:76px;line-height:.98;font-weight:500;letter-spacing:-.045em;text-wrap:balance}
+.sub{font-size:22px;line-height:1.35;font-weight:500;letter-spacing:-.015em;color:#111;max-width:520px}
+h1.big .acc{color:#FF5A1F}
+@media (max-width:900px){h1.big{font-size:52px !important}.sub{font-size:18px}}
+@media (max-width:560px){h1.big{font-size:36px !important}}
+
+.h2{font-size:34px;line-height:1.1;font-weight:500;letter-spacing:-.03em;text-wrap:balance}
+.lede{font-size:17px;line-height:1.6;color:#555555;max-width:520px}
+.chat.mini{border-radius:18px}
+.score{border:1px solid #E3E3E3;border-radius:16px;padding:20px 22px 18px;background:#FFFFFF;box-shadow:0 1px 2px rgba(17,17,17,.04),0 24px 48px -28px rgba(17,17,17,.22);min-width:0}
+.k{display:flex;flex-direction:column;gap:4px}
+.k b{font-size:30px;font-weight:500;letter-spacing:-.03em;line-height:1}
+.k span{font-size:12.5px;color:#6B6B6B;line-height:1.3}
+.ln{display:grid;grid-template-columns:52px minmax(0,1fr) 44px auto;gap:12px;align-items:center;font-size:13px}
+.lname{font-family:'DM Mono',monospace;font-size:12px}
+.bar{height:8px;background:#F0EFEC;border-radius:4px;overflow:hidden;position:relative}
+.bar i{display:block;height:100%;background:#111111;border-radius:4px;max-width:100%}
+.bar i.over{background:#1F6F5B}
+.bar i.low{background:#B7791F}
+.lpct{font-family:'DM Mono',monospace;font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.tag{font-size:11.5px;color:#6B6B6B;white-space:nowrap}
+.tag.w{color:#B7791F}
+.ledger{border:1px solid #E3E3E3;border-radius:16px;padding:18px 20px 14px;background:#FFFFFF;box-shadow:0 1px 2px rgba(17,17,17,.04),0 24px 48px -28px rgba(17,17,17,.22);min-width:0}
+.lg{display:grid;grid-template-columns:92px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid #F0EFEC;font-size:13px;line-height:1.45}
+.lg:last-of-type{border-bottom:0}
+.lg time{font-family:'DM Mono',monospace;font-size:11px;color:#8A8A8A;padding-top:2px}
+.lg b{font-weight:600;color:#111}
+@media (max-width:900px){.score,.ledger,.chat.mini{justify-self:stretch !important;max-width:none !important}.score{order:2 !important}.ln{grid-template-columns:48px minmax(0,1fr) 40px}.tag{display:none}}
+
+.when{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.04em;color:#FF5A1F}
+.bar i{transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.reveal{animation:none}
+/* chat panel */
+.glow{position:absolute;inset:-30px -50px;background:radial-gradient(55% 50% at 50% 50%,rgba(255,90,31,.14),rgba(255,90,31,0) 70%);filter:blur(12px);z-index:0;pointer-events:none}
+.chat{position:relative;z-index:1;border-radius:20px;overflow:hidden;background:#F3EEE6;box-shadow:0 2px 4px rgba(17,17,17,.05),0 32px 64px -28px rgba(17,17,17,.32),0 0 0 1px rgba(17,17,17,.05)}
+.chathead{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#FFFFFF;border-bottom:1px solid #ECE6DE}
+.chatav{width:32px;height:32px;border-radius:50%;background:#111111;display:flex;align-items:center;justify-content:center;flex:none}
+.chatbody{display:flex;flex-direction:column;gap:8px;padding:18px 16px 20px}
+.m{position:relative;max-width:86%;padding:9px 12px 8px 12px;border-radius:16px;font-size:14px;line-height:1.5;color:#111;animation:in .4s ease-out both}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.typing.out{align-self:flex-end;background:#DCF8C6;border-bottom-right-radius:4px;border-bottom-left-radius:14px}
+.m b{font-weight:600}
+.m.in{align-self:flex-start;background:#FFFFFF;border-bottom-left-radius:4px;box-shadow:0 1px 1px rgba(17,17,17,.05)}
+.m.out{align-self:flex-end;background:#DCF8C6;border-bottom-right-radius:4px}
+.m .t{float:right;margin:6px -4px -2px 10px;font-size:10.5px;line-height:1;color:#8A8A8A;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.m:after{content:'';display:block;clear:both}
+/* whatsapp */
+.wa{display:flex;flex-direction:column;gap:8px;max-width:360px}
+.bub{background:#F2F2EF;border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.5;color:#111}
+.bub.me{background:#FFF3E8;align-self:flex-end}
+.bub time{display:block;font-family:'DM Mono',monospace;font-size:10px;color:#8A8A8A;margin-top:4px;text-align:right}
+/* modules */
+.mod{display:flex;flex-direction:column;gap:10px;padding-top:18px;border-top:1px solid #111111;min-width:0}
+.mod h3{font-size:18px;font-weight:600;letter-spacing:-.01em}
+.mod p{font-size:15px;line-height:1.55;color:#555555}
+.mod .status{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#8A8A8A}
+.mod .status.live{color:#1F6F5B}
+.ico{width:24px;height:24px;fill:none;stroke:#111111;stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round;margin-bottom:4px}
+/* fabric diff */
+.fd{display:grid;grid-template-columns:150px 1fr 1fr 1fr minmax(0,1.4fr);gap:12px;padding:9px 0;border-top:1px solid #EEEEEE;font-size:13px;align-items:center}
+.fd.head{border-top:0;font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#8A8A8A}
+.fd .n{font-family:'DM Mono',monospace;font-variant-numeric:tabular-nums}
+.fd .d{font-family:'DM Mono',monospace;font-weight:500}
+.fd .d.bad{color:#B7791F}.fd .d.ok{color:#1F6F5B}
+.fd .note{color:#555555;font-size:12.5px;line-height:1.4}
+.step{display:flex;flex-direction:column;gap:10px;min-width:0;padding-top:18px;border-top:1px solid #E8E8E8}
+.step h3{font-size:18px;font-weight:600;letter-spacing:-.01em}
+.step p{font-size:15px;line-height:1.55;color:#555555}
+.stat{display:flex;flex-direction:column;gap:8px;min-width:0;padding-top:18px;border-top:1px solid #E8E8E8}
+.stat b{font-size:44px;line-height:1;font-weight:500;letter-spacing:-.03em}
+.stat span{font-size:14px;color:#6B6B6B;line-height:1.45}
+.tile{display:flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 14px;border:1px solid #E3E3E3;border-radius:8px;font-size:13.5px;font-weight:500;min-width:0;white-space:nowrap}
+.tile svg{width:18px;height:18px;flex:none;fill:none;stroke:#111111;stroke-width:1.4;stroke-linejoin:round;stroke-linecap:round}
+@media (max-width:900px){
+  .hero{grid-template-columns:minmax(0,1fr) !important;gap:36px !important}
+  .chatwrap{justify-self:stretch !important;max-width:none !important}
+  .boardfoot{grid-template-columns:minmax(0,1fr) !important}
+  .four{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  .three{grid-template-columns:minmax(0,1fr) !important}
+  .two{grid-template-columns:minmax(0,1fr) !important}
+  .tiles{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+  .nav .links{display:none !important}
+  h1{font-size:44px !important}
+}
+@media (max-width:560px){.four{grid-template-columns:minmax(0,1fr) !important}.tiles{grid-template-columns:repeat(2,minmax(0,1fr)) !important}h1{font-size:36px !important}}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+
+
+<div style="width: 100%; max-width: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center">
+<div style="width: 100%; max-width: 1080px; box-sizing: border-box; padding: 0 32px; display: flex; flex-direction: column">
+
+<!-- NAV -->
+<div class="nav" style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 22px 0">
+  <a href="#top" style="text-decoration: none; display: flex; align-items: center" aria-label="Meson home">
+    <svg width="118" height="48" viewBox="0 0 210 90" role="img" aria-label="Meson"><path d="M30 6h150a8 8 0 0 1 8 8v62a8 8 0 0 1-8 8H30a8 8 0 0 1-8-8V44L8 32 22 20v-6a8 8 0 0 1 8-8z" fill="#FFF3E8" stroke="#111111" stroke-width="2.6" stroke-linejoin="round"/><circle cx="30" cy="32" r="4" fill="none" stroke="#111111" stroke-width="2.4"/><path d="M30 32C18 18 6 24 4 12" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round"/><text x="108" y="56" text-anchor="middle" font-family="'Instrument Serif',Georgia,serif" font-size="40" fill="#111111">Meson</text><path d="M62 66h92" stroke="#FF5A1F" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="6 4"/></svg>
+  </a>
+  <div class="links" style="display: flex; gap: 26px">
+    <a href="#product">What it's like</a><a href="#how">How it starts</a><a href="#contact">Contact</a>
+  </div>
+  <a href="#contact" style="font-size:14px;text-decoration:none;color:#111">Talk to us →</a>
+</div>
+<div class="hair"></div>
+
+<!-- HERO -->
+<div id="top" class="hero" style="display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 56px; padding: 72px 0 80px; align-items: center">
+  <div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
+    <p class="eyebrow">Meson is the AI that runs garment factories.</p>
+    <h1 class="big">Text your factory.</h1>
+    <p class="sub">Fabric comes in short. A line falls behind. A buyer moves a date.<br><span class="acc">You hear at 6am, with the fix already done.</span></p>
+    
+    <div style="display: flex; gap: 10px; flex-wrap: wrap"><a class="btn" href="#contact">Come see it run</a><a class="btn ghost" href="#product">What it does</a></div>
+    <p class="mono" style="font-size: 12.5px; color: #8A8A8A; letter-spacing: .02em">Live in plants that make for the brands you wear.</p>
+  </div>
+
+  <div class="chatwrap" style="justify-self: end; width: 100%; max-width: 400px; min-width: 0; position: relative">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="chat">
+      <div class="chathead">
+        <span class="chatav" style="background:transparent;width:40px;height:40px"><svg width="40" height="40" viewBox="0 0 210 90" aria-hidden="true" style="width:40px;height:auto"><path d="M30 6h150a8 8 0 0 1 8 8v62a8 8 0 0 1-8 8H30a8 8 0 0 1-8-8V44L8 32 22 20v-6a8 8 0 0 1 8-8z" fill="#FFF3E8" stroke="#111111" stroke-width="4" stroke-linejoin="round"/><circle cx="30" cy="32" r="5" fill="none" stroke="#111111" stroke-width="3.5"/><text x="108" y="60" text-anchor="middle" font-family="'Instrument Serif',Georgia,serif" font-size="50" fill="#111111">Meson</text></svg></span>
+        <div style="display: flex; flex-direction: column; line-height: 1.15; min-width: 0; flex: 1"><b style="font-size: 14px; font-weight: 600">Meson · Unit 3</b><span style="font-size: 11.5px; color: #25D366; display: inline-flex; align-items: center; gap: 5px"><i style="width: 6px; height: 6px; border-radius: 50%; background: #25D366; display: inline-block"></i>watching 5 lines</span></div>
+        <span class="label" style="font-size: 10px">Tue</span>
+      </div>
+      <div class="chatbody" style="height: 400px; overflow: hidden; justify-content: flex-end">
+        <div class="daypill">06:02</div>
+        <div id="hero-msgs" style="display:contents"></div><!--
+          <sc-if value="{{m.in}}" hint-placeholder-val="{{true}}"><div class="m in">{{m.a}}<b>{{m.b}}</b>{{m.c}}<b>{{m.d}}</b>{{m.e}}<span class="t">{{m.t}}</span></div></sc-if>
+          <sc-if value="{{m.out}}" hint-placeholder-val="{{false}}"><div class="m out">{{m.a}}<span class="t">{{m.t}} <svg width="15" height="10" viewBox="0 0 16 11" aria-hidden="true"><path d="M1 5.5l3 3L10 2M6 8.5l1 1L15 2" fill="none" stroke="#53BDEB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></sc-if>
+        </sc-for>
+        --><div class="typing" id="hero-typing" hidden><i></i><i></i><i></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- what's behind the text -->
+<div style="padding: 0 0 96px; display: flex; flex-direction: column; gap: 0">
+  <div class="board">
+    <div class="boardhead">
+      <div style="display: flex; flex-direction: column; gap: 3px"><span style="font-weight: 600; font-size: 15px">What's behind that message</span><span class="label">Production board · Unit 3 · rebuilt 05:58</span></div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap"><span class="pill w">1 fabric short</span><span class="pill w">1 line behind</span><span class="pill">3 on plan</span></div>
+    </div>
+    <div style="overflow-x: auto"><div style="min-width: 640px; padding: 0 24px">
+      <div class="row head"><span>Order</span><span>Style</span><span>Qty</span><span>Cut · Sew · Finish · Pack</span><span>Ship</span></div>
+      <div class="row hl"><span class="mono">PO 88412</span><span>Men's polo, 3 colours<span class="chip w">navy short 180 m · XL held</span></span><span class="mono">12,000</span><span class="stage"><i class="d"></i><i class="d"></i><i class="w"></i><i></i><i></i></span><span class="mono">Nov 14</span></div>
+      <div class="row"><span class="mono">PO 88397</span><span>Track pant, 2 colours</span><span class="mono">8,500</span><span class="stage"><i class="d"></i><i class="d"></i><i class="d"></i><i class="c"></i><i></i></span><span class="mono">Nov 11</span></div>
+      <div class="row"><span class="mono">PO 88420</span><span>Fleece hoodie<span class="chip">moved to Line 7</span></span><span class="mono">6,000</span><span class="stage"><i class="d"></i><i class="c"></i><i></i><i></i><i></i></span><span class="mono">Nov 18</span></div>
+      <div class="row"><span class="mono">PO 88388</span><span>Women's tee, print</span><span class="mono">20,000</span><span class="stage"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="c"></i></span><span class="mono">Nov 8</span></div>
+      <div class="row"><span class="mono">PO 88431</span><span>Shorts, 4 sizes<span class="chip w">Line 4 behind 1,100 pcs</span></span><span class="mono">15,000</span><span class="stage"><i class="d"></i><i class="w"></i><i></i><i></i><i></i></span><span class="mono">Nov 20</span></div>
+    </div></div>
+    <div class="three boardfoot">
+      <div><span class="label">Read overnight</span><p>Fabric receipt for 88412 from the gate register. Line 4 end-of-shift count. Monday's planning notes. Three buyer emails.</p></div>
+      <div><span class="label">Decided</span><p>Hold XL, release S–L. Hoodie to Line 7 to free Line 4 for the shorts. Nothing else moves.</p></div>
+      <div><span class="label">Sent</span><p>One message to Unit 3. One to the Line 7 supervisor. Supplier chase, after a yes.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- A DAY, SHOWN -->
+<div style="padding-bottom: 24px"><span class="label">A Tuesday with Meson</span></div>
+
+<!-- 1 CONVENIENCE -->
+<div id="product" class="two reveal" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; padding-bottom: 120px; align-items: start">
+  <div style="display: flex; flex-direction: column; gap: 14px; min-width: 0; padding-top: 48px">
+    <span class="when">11:20 · in the car</span>
+    <h2 class="h2">You don't open anything.</h2>
+    <p class="lede">Ask in plain words. Get a sentence back.</p>
+  </div>
+  <div class="chat mini" style="justify-self: end; width: 100%; max-width: 380px">
+    <div class="chatbody" style="padding: 16px 14px 18px; gap: 7px; height: 300px; overflow: hidden; justify-content: flex-end">
+      <div id="c2-msgs" style="display:contents"></div><!--
+        <sc-if value="{{m.out}}" hint-placeholder-val="{{false}}"><div class="m out">{{m.a}}<span class="t">{{m.t}}</span></div></sc-if>
+        <sc-if value="{{m.in}}" hint-placeholder-val="{{true}}"><div class="m in">{{m.a}}<b>{{m.b}}</b>{{m.c}}<span class="t">{{m.t}}</span></div></sc-if>
+      </sc-for>
+      --><div class="typing" id="c2-typing" hidden><i></i><i></i><i></i></div>
+    </div>
+  </div>
+</div>
+
+<!-- 2 MOMENTUM -->
+<div class="two reveal" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; padding-bottom: 120px; align-items: start">
+  <div class="score" id="score" style="order: 1">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 14px; border-bottom: 1px solid #EEEEEE">
+      <span style="font-weight: 600; font-size: 15px">Unit 3 · this week</span><span class="label">Thu · day 4 of 6</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 18px 0">
+      <div class="k"><b><span id="pct">0</span>%</b><span>of plan</span></div>
+      <div class="k"><b class="acc"><span id="streak">0</span></b><span>days on time</span></div>
+      <div class="k"><b>0</b><span>fabric surprises</span></div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px; padding-top: 6px">
+      <div class="ln"><span class="lname">Line 3</span><span class="bar"><i data-w="100%" style="width: 0%" class="over"></i></span><span class="lpct">104%</span><span class="tag">3-day streak 🔥</span></div>
+      <div class="ln"><span class="lname">Line 1</span><span class="bar"><i data-w="96%" style="width: 0%"></i></span><span class="lpct">100%</span><span class="tag">on plan</span></div>
+      <div class="ln"><span class="lname">Line 7</span><span class="bar"><i data-w="94%" style="width: 0%"></i></span><span class="lpct">98%</span><span class="tag">took the hoodie</span></div>
+      <div class="ln"><span class="lname">Line 2</span><span class="bar"><i data-w="91%" style="width: 0%"></i></span><span class="lpct">95%</span><span class="tag">XL held · not on them</span></div>
+      <div class="ln"><span class="lname">Line 4</span><span class="bar"><i data-w="81%" style="width: 0%" class="low"></i></span><span class="lpct">84%</span><span class="tag w">600 to go</span></div>
+    </div>
+    <p style="font-size: 12.5px; color: #6B6B6B; padding-top: 16px">To every supervisor, 06:10. Nobody made it.</p>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 14px; min-width: 0; order: 2; padding-top: 48px">
+    <span class="when">06:10 · every line, every morning</span>
+    <h2 class="h2">Hitting plan starts to feel like winning.</h2>
+    <p class="lede">Supervisors see each other's lines. Streaks get kept.</p>
+  </div>
+</div>
+
+<!-- 3 THE RECORD -->
+<div class="two reveal" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; padding-bottom: 120px; align-items: start">
+  <div style="display: flex; flex-direction: column; gap: 14px; min-width: 0; padding-top: 48px">
+    <span class="when">Six months later · a buyer asks</span>
+    <h2 class="h2">Every decision, written down.</h2>
+    <p class="lede">Why the hoodie moved. Who said yes. What it cost.</p>
+  </div>
+  <div class="ledger" id="ledger" style="justify-self: end; width: 100%; max-width: 420px">
+    <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #EEEEEE"><span class="label" style="color: #111">PO 88412 · men's polo</span><span class="label acc">shipped on time</span></div>
+    <div style="height: 318px; overflow: hidden" id="ledger-list"><!--
+      <div class="lg"><time>{{r.t}}</time><div><b>{{r.h}}</b> · {{r.d}}</div></div>
+    --></div>
+    <div style="display: flex; align-items: center; gap: 8px; padding-top: 12px"><input type="text" id="lsearch" placeholder="Search any order, line, fabric or person" aria-label="Search the record" style="flex: 1; border: 1px solid #E3E3E3; border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 13px; outline: 0; color: #111; background: #FAFAF8"></div>
+  </div>
+</div>
+
+<!-- HOW, SHORT -->
+<div id="how" style="padding-bottom: 112px; display: flex; flex-direction: column; gap: 20px; max-width: 720px">
+  <h2 class="h2">Starts in a week. Nothing gets replaced.</h2>
+  <p class="lede">One of us sits in your Monday meeting. Meson reads what you already have. Every change is a suggestion until a person says yes.</p>
+  <p class="mono" style="font-size: 12.5px; color: #8A8A8A">Tally · SAP B1 · Excel · WhatsApp · email · buyer portals · FastReact · line counters</p>
+</div>
+
+<!-- WHO -->
+<div class="two" style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; padding-bottom: 96px">
+  <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+    <span class="label">Who we are</span>
+    <p class="lede">We come from a family that has run garment factories for 35 years. One of us runs operations across five plants; the other builds software. Meson started as the tool we needed for ourselves, and it runs our floors today.</p>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 10px; min-width: 0">
+    <span class="label">Who it's for</span>
+    <p class="lede">Garment units with two to twenty lines. If your plan lives in a Monday meeting and your tracking lives in group chats, this was built in a factory like yours.</p>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="hair"></div>
+<div id="contact" style="padding: 80px 0 96px; display: flex; flex-direction: column; gap: 20px; max-width: 640px">
+  <h2 style="font-size: 40px; line-height: 1.08; font-weight: 500; letter-spacing: -.03em; text-wrap: balance">Tell us about your Monday meeting.</h2>
+  <p style="font-size: 17px; line-height: 1.55; color: #555555">Twenty minutes. We'll ask how your planning actually runs, you'll ask us anything, and we'll tell you straight whether Meson is for you. We're taking a handful of factories before year end and we'd rather have the right ones.</p>
+  <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; padding-top: 6px">
+    <a class="btn" href="#contact">Talk to us</a>
+    <span class="mono" style="font-size: 14px; color: #444444; user-select: all">hello@mesonlabs.ai</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="hair"></div>
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 20px 0 28px" class="label">
+  <span style="display:inline-flex;align-items:center;gap:10px"><svg width="44" height="19" viewBox="0 0 210 90" aria-hidden="true"><path d="M30 6h150a8 8 0 0 1 8 8v62a8 8 0 0 1-8 8H30a8 8 0 0 1-8-8V44L8 32 22 20v-6a8 8 0 0 1 8-8z" fill="#FFF3E8" stroke="#111111" stroke-width="3" stroke-linejoin="round"/><text x="108" y="58" text-anchor="middle" font-family="'Instrument Serif',Georgia,serif" font-size="44" fill="#111111">Meson</text></svg>© 2026 Meson Labs</span>
+</div>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var ticks='<svg width="15" height="10" viewBox="0 0 16 11" aria-hidden="true"><path d="M1 5.5l3 3L10 2M6 8.5l1 1L15 2" fill="none" stroke="#53BDEB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+  function bubble(m){
+    var d=document.createElement('div'); d.className='m '+(m.out?'out':'in');
+    d.innerHTML=(m.html||esc(m.a))+'<span class="t">'+m.t+(m.out?' '+ticks:'')+'</span>';
+    return d;
+  }
+  function chatLoop(listId, typingId, script, holdMs){
+    var list=document.getElementById(listId), typ=document.getElementById(typingId), i=0, timers=[];
+    function later(fn,ms){timers.push(setTimeout(fn,ms))}
+    function step(){
+      if(i>=script.length){ later(function(){ list.innerHTML=''; i=0; later(step,500); }, holdMs); return; }
+      var m=script[i];
+      later(function(){
+        typ.hidden=false; typ.className='typing '+(m.out?'out':'in');
+        later(function(){ typ.hidden=true; list.appendChild(bubble(m)); i++; step(); }, m.type);
+      }, m.wait);
+    }
+    return {start:step, stop:function(){timers.forEach(clearTimeout)}};
+  }
+  var hero=[
+    {html:'Fabric for <b>PO 88412</b> came in. Navy pique is <b>180 m short</b> of the 2,400 on the PO. Enough for S–L, not XL.', t:'06:02', wait:900, type:1100},
+    {html:'Supplier says balance Thursday. I\'ve held XL and released S–L so Line 2 doesn\'t sit idle. Ship date holds at <b>Nov 14</b> if it lands by Friday.', t:'06:02', wait:1600, type:1300},
+    {a:'Chase them for Wednesday?', t:'06:03', wait:1100, type:700},
+    {out:true, a:'Yes', t:'06:14', wait:2000, type:900},
+    {a:'Done. Supplier chased, Line 7 told about the hoodie move. I\'ll confirm when they do.', t:'06:14', wait:1400, type:1200}
+  ];
+  var car=[
+    {out:true, a:'Where are we on 88397?', t:'11:20', wait:800, type:900},
+    {html:'Track pant, 8,500 pcs. Sewing done on Line 3, 6,200 through finishing, packing starts tomorrow. On track for <b>Nov 11</b>.', t:'11:20', wait:600, type:1300},
+    {out:true, a:'Anything late this week?', t:'11:21', wait:1800, type:900},
+    {a:'Nothing late. Two to watch: 88412 if the navy balance slips past Friday, 88431 if Line 4 doesn\'t recover by Thursday. I\'ll tell you if either moves.', t:'11:21', wait:600, type:1500},
+    {out:true, a:'👍', t:'11:22', wait:1400, type:500}
+  ];
+  var ledger=[
+    ['Oct 28 06:02','Fabric received short','navy pique 2,220 of 2,400 m · gate register'],
+    ['Oct 28 06:02','XL held, S–L released','suggested by Meson · approved by Unit 3 head'],
+    ['Oct 28 06:14','Supplier chased','asked for Wed · reply pending'],
+    ['Oct 29 15:40','Balance confirmed','180 m Thursday · supplier email'],
+    ['Oct 31 09:05','Balance received','182 m · XL cutting released'],
+    ['Nov 14','Shipped on time','12,000 pcs · cost: one idle shift on Line 2']
+  ];
+  chatLoop('hero-msgs','hero-typing',hero,3200).start();
+
+  // scroll-triggered pieces
+  var started={};
+  function once(id, fn){
+    var el=document.getElementById(id); if(!el) return;
+    if(!('IntersectionObserver' in window)){ fn(); return; }
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting && !started[id]){ started[id]=true; fn(); io.disconnect(); } }); },{threshold:.35});
+    io.observe(el);
+  }
+  once('c2-msgs', function(){ chatLoop('c2-msgs','c2-typing',car,4000).start(); });
+  once('score', function(){
+    document.querySelectorAll('#score .bar i').forEach(function(b){ requestAnimationFrame(function(){ b.style.width=b.getAttribute('data-w'); }); });
+    var p=document.getElementById('pct'), s=document.getElementById('streak'), t0=performance.now();
+    (function tick(){ var k=Math.min(1,(performance.now()-t0)/1100); var e=1-Math.pow(1-k,3); p.textContent=Math.round(96*e); s.textContent=Math.round(11*e); if(k<1) requestAnimationFrame(tick); })();
+  });
+  once('ledger', function(){
+    var list=document.getElementById('ledger-list'), i=0;
+    (function add(){ if(i>=ledger.length) return; var r=ledger[i++]; var d=document.createElement('div'); d.className='lg'; d.innerHTML='<time>'+r[0]+'</time><div><b>'+esc(r[1])+'</b> · '+esc(r[2])+'</div>'; list.appendChild(d); setTimeout(add, i===1?200:650); })();
+  });
+})();
+</script>
+</body>
+</html>
