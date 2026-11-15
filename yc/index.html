@@ -2,69 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Meson — partner demo</title>
+<title>Meson</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 210 90'%3E%3Cpath d='M30 6h150a8 8 0 0 1 8 8v62a8 8 0 0 1-8 8H30a8 8 0 0 1-8-8V44L8 32 22 20v-6a8 8 0 0 1 8-8z' fill='%23FFF3E8' stroke='%23111' stroke-width='6'/%3E%3Ctext x='108' y='62' text-anchor='middle' font-family='Georgia,serif' font-size='56' fill='%23111'%3EM%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&family=Instrument+Serif&display=swap">
-<style>
-:root{--bg:#F7F7F5;--card:#FFFFFF;--fg:#111;--mute:#6B6B6B;--faint:#8A8A8A;--line:#E8E8E8;--acc:#FF5A1F}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;padding:24px 16px}
-.mono{font-family:'DM Mono',Menlo,monospace}
-.label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
-.card{width:100%;max-width:440px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px}
-.brand{display:flex;align-items:center;gap:10px;margin-bottom:22px}
-.brand svg{flex:none}
-.brand b{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:22px}
-h1{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:28px;line-height:1.15;margin:0 0 8px;letter-spacing:-.01em}
-p{margin:0;color:var(--mute)}
-.creds{margin:22px 0 18px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px}
-.row+.row{border-top:1px solid var(--line)}
-.row .v{font-size:14px}
-.copy{border:1px solid var(--line);background:#fff;border-radius:6px;padding:4px 9px;font:inherit;font-size:12px;color:var(--mute);cursor:pointer}
-.copy:hover{border-color:var(--fg);color:var(--fg)}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:46px;background:var(--fg);color:#fff;font-weight:500;font-size:15px;border-radius:9px;border:1px solid var(--fg);text-decoration:none}
-.btn:hover{background:#000}
-.btn .dot{width:8px;height:8px;border-radius:50%;background:var(--acc)}
-.sub{margin-top:14px;font-size:13px;color:var(--faint)}
-.sub a{color:var(--mute)}
-.what{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
-.what ul{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:7px;font-size:14px;color:var(--mute)}
-.what li::before{content:"—";color:var(--acc);margin-right:8px}
-</style>
+<meta http-equiv="refresh" content="0; url=https://demo.mesonlabs.ai/login">
+<script>location.replace("https://demo.mesonlabs.ai/login");</script>
 </head>
-<body>
-<main class="card">
-  <div class="brand">
-    <svg width="46" height="20" viewBox="0 0 210 90" aria-hidden="true"><path d="M30 6h150a8 8 0 0 1 8 8v62a8 8 0 0 1-8 8H30a8 8 0 0 1-8-8V44L8 32 22 20v-6a8 8 0 0 1 8-8z" fill="#FFF3E8" stroke="#111" stroke-width="4"/><circle cx="30" cy="32" r="4" fill="none" stroke="#111" stroke-width="3"/><path d="M62 66h92" stroke="#FF5A1F" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 6"/></svg>
-    <b>Meson</b>
-  </div>
-  <h1>Log into a live plant.</h1>
-  <p>This is the same system our factory runs on, pointed at a seeded week in Plant 2: an Adidas order short on navy fabric, a Puma order planned past its ship date, and the people chasing both.</p>
-
-  <div class="creds">
-    <div class="row"><div><div class="label">Email</div><div class="v mono" id="u">yc@mesonlabs.ai</div></div><button class="copy" data-copy="u">Copy</button></div>
-    <div class="row"><div><div class="label">Password</div><div class="v mono" id="p">msnLbs2026!</div></div><button class="copy" data-copy="p">Copy</button></div>
-  </div>
-
-  <a class="btn" href="https://demo.mesonlabs.ai/login"><span class="dot"></span> Open the demo</a>
-  <div class="sub">Everything you can click is real and writes to the demo database. It resets on each deploy. Prefer a 90-second tour? <a href="demo-web.mp4">Watch the recording.</a></div>
-
-  <div class="what">
-    <div class="label">Start here</div>
-    <ul>
-      <li><b>Gantt</b> — Puma RN220 on Line 8 ends after its CRD. Drag it to Line 12.</li>
-      <li><b>Order AD-SS26-TR114</b> — fabric tab: packing list SGT/PL/4471 is 400 m short on navy.</li>
-      <li><b>Tasks</b> — the seven follow-ups that came out of the PPM, who owns them, what's late.</li>
-    </ul>
-  </div>
-</main>
-<script>
-document.querySelectorAll('.copy').forEach(function(b){b.addEventListener('click',function(){var t=document.getElementById(b.dataset.copy).textContent;navigator.clipboard&&navigator.clipboard.writeText(t).then(function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1200)})})});
-</script>
+<body style="margin:0;font-family:Helvetica,Arial,sans-serif;color:#6B6B6B;display:flex;align-items:center;justify-content:center;height:100vh">
+<a href="https://demo.mesonlabs.ai/login" style="color:#111">Redirecting to demo.mesonlabs.ai…</a>
 </body>
 </html>
