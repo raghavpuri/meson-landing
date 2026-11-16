@@ -2,12 +2,533 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Meson</title>
 <meta name="robots" content="noindex">
-<meta http-equiv="refresh" content="0; url=https://meson-demo.onrender.com/login">
-<script>location.replace("https://meson-demo.onrender.com/login");</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 210 90'%3E%3Cpath d='M30 6h150a8 8 0 0 1 8 8v62a8 8 0 0 1-8 8H30a8 8 0 0 1-8-8V44L8 32 22 20v-6a8 8 0 0 1 8-8z' fill='%23FFF3E8' stroke='%23111' stroke-width='6'/%3E%3Ctext x='108' y='62' text-anchor='middle' font-family='Georgia,serif' font-size='56' fill='%23111'%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&family=Instrument+Serif&display=swap">
+<style>
+:root{--bg:#F6F6F3;--card:#fff;--fg:#111;--mute:#666;--faint:#8A8A8A;--line:#E6E6E2;--acc:#FF5A1F;--acc-soft:#FFF1EA;--ok:#1F6F5B;--ok-soft:#E8F3EF;--warn:#B45309;--warn-soft:#FFF4E0;--bad:#B3261E;--bad-soft:#FCEBEA;--blue:#2457D6;--blue-soft:#EAF0FF;--r:10px}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:'DM Sans',Helvetica,Arial,sans-serif;font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+.mono{font-family:'DM Mono',Menlo,monospace}
+.serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400}
+.cap{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.hide{display:none!important}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;font-weight:500;font-size:13px;line-height:1;min-height:34px;white-space:nowrap;text-decoration:none}
+.btn:hover{border-color:#bbb}
+.btn.primary{background:var(--fg);color:#fff;border-color:var(--fg)}.btn.primary:hover{background:#000}
+.btn.sm{padding:5px 9px;min-height:28px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:default}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:500;line-height:1.5}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.warn{background:var(--warn-soft);color:var(--warn)}.pill.bad{background:var(--bad-soft);color:var(--bad)}.pill.blue{background:var(--blue-soft);color:var(--blue)}.pill.gray{background:#EFEFEC;color:#555}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.card h3{margin:0;font-size:13px;font-weight:600}
+.card .hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.card .bd{padding:14px 16px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-weight:500;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tr.row:hover td{background:#FAFAF8;cursor:pointer}
+.num{text-align:right;font-family:'DM Mono',monospace;font-size:12.5px}
+.bar{height:6px;border-radius:4px;background:#EDEDEA;overflow:hidden;position:relative}
+.bar>i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--fg)}
+.bar>i.ok{background:var(--ok)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:#111;color:#fff;padding:10px 14px;border-radius:9px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:99;display:flex;gap:10px;align-items:center;max-width:92vw}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.toast b{color:#FFB08A;font-weight:500}
+
+/* login */
+#login{min-height:100%;display:grid;grid-template-columns:1fr 1fr}
+#login .left{background:#111;color:#fff;padding:48px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+#login .left .cap{color:rgba(255,255,255,.4)}
+#login .left h1{font-size:54px;line-height:1.02;margin:0;letter-spacing:-.01em;max-width:520px}
+#login .left h1 em{font-style:normal;color:var(--acc)}
+#login .left p{color:rgba(255,255,255,.55);max-width:420px;font-size:15px;margin:18px 0 0}
+#login .right{display:flex;align-items:center;justify-content:center;padding:40px 24px}
+.form{width:100%;max-width:360px}
+.form h2{margin:0 0 4px;font-size:28px}
+.form .sub{color:var(--mute);margin:0 0 26px}
+.field{margin-bottom:14px}.field label{display:block;font-size:12px;color:var(--mute);margin-bottom:6px}
+.field input{width:100%;border:1px solid var(--line);border-radius:8px;padding:11px 12px;background:#fff;outline:none}
+.field input:focus{border-color:var(--fg)}
+.err{color:var(--bad);font-size:12.5px;min-height:18px;margin:4px 0 8px}
+.chat-demo{margin-top:34px;display:grid;gap:8px;max-width:420px}
+.chat-demo .m{background:rgba(255,255,255,.08);border-radius:14px 14px 14px 4px;padding:10px 12px;font-size:13.5px;color:rgba(255,255,255,.85);max-width:88%;opacity:0;transform:translateY(6px);animation:in .5s forwards}
+.chat-demo .m.me{background:var(--acc);color:#fff;border-radius:14px 14px 4px 14px;margin-left:auto}
+@keyframes in{to{opacity:1;transform:none}}
+
+/* shell */
+#app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+aside{background:#fff;border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:9px;padding:4px 8px 18px}
+.brand b{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:21px}
+.nav{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;text-decoration:none;color:#444;font-weight:500;font-size:13.5px}
+.nav:hover{background:#F4F4F1}.nav.on{background:#111;color:#fff}
+.nav .n{margin-left:auto;font-size:11px;background:var(--acc);color:#fff;border-radius:999px;padding:1px 7px}
+.nav.on .n{background:#fff;color:#111}
+.nav svg{width:16px;height:16px;flex:none}
+aside .foot{margin-top:auto;padding:10px 8px;font-size:12px;color:var(--faint);display:grid;gap:8px}
+main{padding:22px 28px 60px;max-width:1360px;width:100%;min-width:0}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.top h1{margin:0;font-size:30px;line-height:1.1}
+.top .sub{color:var(--mute);margin-top:4px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}
+.kpi{padding:14px 16px}
+.kpi .v{font-size:26px;font-family:'Instrument Serif',Georgia,serif;margin-top:4px}
+.kpi .d{font-size:12px;color:var(--mute);margin-top:2px}
+.need{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-bottom:1px solid var(--line)}
+.need:last-child{border-bottom:0}
+.need .ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:none;font-weight:600;font-size:14px}
+.need .t{font-weight:600}.need .s{color:var(--mute);font-size:13px;margin-top:2px}
+.need .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.ev{display:grid;grid-template-columns:62px 1fr;gap:12px;padding:9px 16px;border-bottom:1px solid var(--line);font-size:13px}
+.ev:last-child{border-bottom:0}.ev .w{color:var(--faint);font-family:'DM Mono',monospace;font-size:11.5px;padding-top:2px}
+.ev .who{color:var(--mute)}
+.empty{padding:28px;text-align:center;color:var(--faint)}
+
+/* order detail */
+.drawer{position:fixed;inset:0;background:rgba(0,0,0,.25);display:flex;justify-content:flex-end;z-index:50}
+.drawer .pane{width:min(720px,100%);background:#fff;height:100%;overflow:auto;padding:22px 26px 40px;animation:slide .22s}
+@keyframes slide{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+.stages{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.stage{border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.stage .cap{margin-bottom:6px}.stage .v{font-family:'DM Mono',monospace;font-size:15px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:18px 0 14px}
+.tab{padding:8px 12px;border:0;background:none;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500}
+.tab.on{color:var(--fg);border-color:var(--fg)}
+
+/* gantt */
+.gantt{overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:#fff}
+.gwrap{position:relative;min-width:max-content}
+.ghead{display:flex;position:sticky;top:0;background:#fff;z-index:3;border-bottom:1px solid var(--line)}
+.ghead .lab{width:120px;flex:none;border-right:1px solid var(--line);position:sticky;left:0;background:#fff;z-index:4}
+.ghead .d{width:30px;flex:none;text-align:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);padding:8px 0 6px;border-right:1px solid #F1F1EE}
+.ghead .d.sun{background:#FAFAF8}.ghead .d.today{color:var(--acc);font-weight:600}
+.ghead .d span{display:block;font-size:9px;color:#bbb}
+.grow{display:flex;height:46px;border-bottom:1px solid var(--line);position:relative}
+.grow .lab{width:120px;flex:none;border-right:1px solid var(--line);padding:0 12px;display:flex;align-items:center;font-weight:500;font-size:12.5px;background:#fff;position:sticky;left:0;z-index:2;gap:6px}
+.grow .lab small{color:var(--faint);font-weight:400}
+.grow .cells{display:flex}
+.grow .c{width:30px;flex:none;border-right:1px solid #F3F3F0;height:46px}
+.grow .c.sun{background:#FAFAF8}
+.gbar{position:absolute;top:8px;height:30px;border-radius:7px;background:#111;color:#fff;font-size:11.5px;display:flex;align-items:center;padding:0 9px;white-space:nowrap;overflow:hidden;cursor:grab;user-select:none;touch-action:none;box-shadow:0 1px 0 rgba(0,0,0,.08);z-index:1}
+.gbar.risk{background:var(--bad)}.gbar.done{background:#8A8A8A}.gbar.sel{outline:2px solid var(--acc);outline-offset:1px}
+.gbar.drag{opacity:.85;cursor:grabbing;z-index:5}
+.gbar .l{position:sticky;left:128px;display:inline-flex;align-items:center}
+.gbar .q{opacity:.65;margin-left:8px;font-family:'DM Mono',monospace;font-size:10.5px}
+.crd{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed var(--acc);z-index:0}
+.crd::after{content:attr(data-l);position:absolute;top:-1px;left:4px;font-size:9px;color:var(--acc);font-family:'DM Mono',monospace;white-space:nowrap}
+.todayline{position:absolute;top:0;bottom:0;width:1px;background:var(--acc);opacity:.6;z-index:0;pointer-events:none}
+.ginfo{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;color:var(--mute);font-size:13px}
+
+/* tasks */
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.col{background:#F0F0ED;border-radius:var(--r);padding:10px;min-height:300px}
+.col .ch{display:flex;justify-content:space-between;align-items:center;padding:4px 6px 10px;font-weight:600;font-size:12.5px}
+.col .ch span{color:var(--faint);font-weight:500}
+.tk{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:grab}
+.tk.drag{opacity:.5}
+.tk .t{font-weight:500;font-size:13px}
+.tk .m{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:11.5px;color:var(--mute)}
+.av{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#E8E8E4;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#333}
+.col.over{outline:2px dashed var(--acc)}
+
+/* thread */
+.thread{display:grid;grid-template-columns:1fr 320px;gap:14px;height:calc(100vh - 150px);min-height:520px}
+.chat{display:flex;flex-direction:column;background:#EFE9E1;border-radius:var(--r);border:1px solid var(--line);overflow:hidden}
+.chat .chd{background:#fff;padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.chat .msgs{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:72%;background:#fff;border-radius:12px 12px 12px 3px;padding:8px 11px 6px;font-size:13.5px;box-shadow:0 1px 0 rgba(0,0,0,.06);animation:in .3s}
+.msg.me{align-self:flex-end;background:#DDF6CE;border-radius:12px 12px 3px 12px}
+.msg .who{font-size:11px;font-weight:600;color:var(--acc);margin-bottom:2px}
+.msg.me .who{display:none}
+.msg .tm{float:right;font-size:10px;color:#8A8A8A;margin:8px 0 0 10px;font-family:'DM Mono',monospace}
+.msg .quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.msg .quick button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 10px;font-size:12px}
+.msg .quick button:hover{border-color:#111}
+.msg pre{margin:6px 0 0;font-family:'DM Mono',monospace;font-size:12px;white-space:pre-wrap;background:#F6F6F3;border-radius:6px;padding:8px}
+.chat .in{display:flex;gap:8px;padding:10px;background:#fff;border-top:1px solid var(--line)}
+.chat .in input{flex:1;border:1px solid var(--line);border-radius:999px;padding:9px 14px;outline:none;min-width:0}
+.chat .in input:focus{border-color:#111}
+.hints button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:11px 16px;font-size:13px}
+.hints button:last-child{border-bottom:0}
+.hints button:hover{background:#FAFAF8}
+.hints .cap{display:block;margin-bottom:2px}
+
+@media (max-width:900px){#login{grid-template-columns:1fr}#login .left{display:none}#app{grid-template-columns:1fr}aside{position:static;height:auto;flex-direction:row;flex-wrap:wrap;gap:2px}aside .foot,.brand{display:none}main{padding:16px}.g2,.g4,.kanban{grid-template-columns:1fr 1fr}.thread{grid-template-columns:1fr}.hints{display:none}.top h1{font-size:24px}.stages{grid-template-columns:1fr 1fr}}
+</style>
 </head>
-<body style="margin:0;font-family:Helvetica,Arial,sans-serif;color:#6B6B6B;display:flex;align-items:center;justify-content:center;height:100vh">
-<a href="https://meson-demo.onrender.com/login" style="color:#111">Opening the Meson demo…</a>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<section id="login">
+  <div class="left">
+    <div style="display:flex;align-items:center;gap:10px">
+      <svg width="52" height="22" viewBox="0 0 210 90" aria-hidden="true"><path d="M30 6h150a8 8 0 0 1 8 8v62a8 8 0 0 1-8 8H30a8 8 0 0 1-8-8V44L8 32 22 20v-6a8 8 0 0 1 8-8z" fill="#FFF3E8" stroke="#fff" stroke-width="4"/><circle cx="30" cy="32" r="4" fill="none" stroke="#111" stroke-width="3"/><path d="M62 66h92" stroke="#FF5A1F" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 6"/></svg>
+      <span class="serif" style="font-size:22px">Meson</span>
+    </div>
+    <div>
+      <div class="cap">Plant 2 · Okhla · one week in December</div>
+      <h1 class="serif" style="margin-top:14px">Text your factory.<br><em>It texts back</em> with the plan.</h1>
+      <p>Orders, lines, fabric and the people chasing them, in one record. This is a seeded week: an Adidas order short on navy, a Puma order planned past its ship date, and seven follow-ups from Monday's PPM.</p>
+      <div class="chat-demo">
+        <div class="m" style="animation-delay:.3s"><b style="color:#FFB08A">Sanjay</b> · Line 8 did 240 today on TR114. Short by 40.</div>
+        <div class="m me" style="animation-delay:1.1s">Does TR114 still make the 18th?</div>
+        <div class="m" style="animation-delay:1.9s"><b style="color:#FFB08A">Meson</b> · Yes. Line 7 finishes 16 Dec. Navy fabric is the risk: 400 m short on SGT/PL/4471. Two fixes ready when you are.</div>
+      </div>
+    </div>
+    <div class="cap">Everything you click is real inside the demo. It resets when you log out.</div>
+  </div>
+  <div class="right">
+    <form class="form" id="loginForm" autocomplete="off">
+      <h2 class="serif">Sign in</h2>
+      <p class="sub">Use the credentials from the application.</p>
+      <div class="field"><label>Email</label><input id="email" type="email" placeholder="you@mesonlabs.ai"></div>
+      <div class="field"><label>Password</label><input id="pw" type="password" placeholder="••••••••••"></div>
+      <div class="err" id="err"></div>
+      <button class="btn primary" style="width:100%;justify-content:center;min-height:42px" type="submit">Enter Plant 2</button>
+      <p style="color:var(--faint);font-size:12px;margin-top:18px">Partner access · read, plan and approve. Nothing here touches a live factory.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<section id="app" class="hide">
+  <aside>
+    <div class="brand">
+      <svg width="40" height="17" viewBox="0 0 210 90" aria-hidden="true"><path d="M30 6h150a8 8 0 0 1 8 8v62a8 8 0 0 1-8 8H30a8 8 0 0 1-8-8V44L8 32 22 20v-6a8 8 0 0 1 8-8z" fill="#FFF3E8" stroke="#111" stroke-width="4"/><circle cx="30" cy="32" r="4" fill="none" stroke="#111" stroke-width="3"/><path d="M62 66h92" stroke="#FF5A1F" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 6"/></svg>
+      <b>Meson</b>
+    </div>
+    <a class="nav" href="#/today" data-r="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Today<span class="n" id="nToday"></span></a>
+    <a class="nav" href="#/orders" data-r="orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Orders</a>
+    <a class="nav" href="#/plan" data-r="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="12" height="4" rx="1"/><rect x="7" y="11" width="14" height="4" rx="1"/><rect x="5" y="17" width="9" height="4" rx="1"/></svg>Plan</a>
+    <a class="nav" href="#/fabric" data-r="fabric"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7c3-3 6 3 9 0s6 3 9 0M3 12c3-3 6 3 9 0s6 3 9 0M3 17c3-3 6 3 9 0s6 3 9 0"/></svg>Fabric<span class="n" id="nFab"></span></a>
+    <a class="nav" href="#/tasks" data-r="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l4 4L19 6"/></svg>Follow-ups<span class="n" id="nTasks"></span></a>
+    <a class="nav" href="#/thread" data-r="thread"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-5.1A8 8 0 1 1 21 12z"/></svg>Thread<span class="n" id="nChat"></span></a>
+    <div class="foot">
+      <div><b style="color:#333">YC Partner</b><br>Planning · Plant 2</div>
+      <div style="display:flex;gap:6px"><button class="btn sm" id="resetBtn">Reset demo</button><button class="btn sm" id="logoutBtn">Log out</button></div>
+    </div>
+  </aside>
+  <main id="main"></main>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== helpers ===================== */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const DAY=864e5;
+const TODAY=(()=>{const d=new Date();d.setHours(0,0,0,0);return d})();
+const dayAt=o=>new Date(TODAY.getTime()+o*DAY);
+const fmt=d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+const fmtD=o=>fmt(dayAt(o));
+const inr=l=>'₹'+l.toFixed(1)+' L';
+const n=x=>Number(x).toLocaleString('en-IN');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const wd=o=>dayAt(o).getDay()===0;
+const initials=s=>s.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const nowHM=()=>new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+let toastT;function toast(h){const t=$('#toast');t.innerHTML=h;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2800)}
+const CREDS={u:'yc@mesonlabs.ai',p:'msnLbs2026!'};
+const KEY='meson.yc.v1';
+
+/* ===================== seed ===================== */
+function seed(){
+  const people={sanjay:'Sanjay Shukla',imran:'Imran Qureshi',kavita:'Kavita Iyer',ramesh:'Ramesh Verma',mahesh:'Mahesh (SGT)'};
+  const orders=[
+    {id:'TR114',no:'AD-SS26-TR114',buyer:'Adidas',style:'Training Tee',color:'Collegiate Navy / White / Solar Red',qty:12000,fob:5.38,crd:33,cut:12000,stitched:6600,packed:3600,status:'On machine',fabricPo:'SGT/PO/2026/0912',supplier:'Shree Ganesh Textiles',smv:11.2},
+    {id:'RN220',no:'PU-AH26-RN220',buyer:'Puma',style:'Running Singlet',color:'Black / Fizzy Lime',qty:6000,fob:4.10,crd:34,cut:6000,stitched:1800,packed:0,status:'On machine',fabricPo:'VTX/PO/2026/0188',supplier:'Vardhman Textiles',smv:8.6},
+    {id:'HD307',no:'AD-SS26-HD307',buyer:'Adidas',style:'Fleece Hoodie',color:'Shadow Navy',qty:4800,fob:11.9,crd:21,cut:4800,stitched:4800,packed:4100,status:'Finishing',fabricPo:'ARV/PO/2026/0441',supplier:'Arvind Mills',smv:19.4},
+    {id:'TK118',no:'PU-SS26-TK118',buyer:'Puma',style:'Track Jacket',color:'Black / White',qty:3200,fob:9.2,crd:48,cut:1200,stitched:0,packed:0,status:'Cutting',fabricPo:'VTX/PO/2026/0203',supplier:'Vardhman Textiles',smv:17.8},
+    {id:'PL552',no:'RB-AH26-PL552',buyer:'Reebok',style:'Polo',color:'Vector Red',qty:9000,fob:6.1,crd:60,cut:0,stitched:0,packed:0,status:'Fabric booked',fabricPo:'SGT/PO/2026/0931',supplier:'Shree Ganesh Textiles',smv:12.6},
+    {id:'SH209',no:'DC-SS26-SH209',buyer:'Decathlon',style:'Running Short',color:'Graphite',qty:15000,fob:3.4,crd:-4,cut:15000,stitched:15000,packed:15000,status:'Dispatched',fabricPo:'LXM/PO/2026/0077',supplier:'Loyal Textiles',smv:7.1},
+    {id:'TS433',no:'AD-SS26-TS433',buyer:'Adidas',style:'Graphic Tee',color:'White',qty:7500,fob:4.9,crd:12,cut:7500,stitched:7500,packed:6900,status:'Finishing',fabricPo:'SGT/PO/2026/0902',supplier:'Shree Ganesh Textiles',smv:9.3},
+    {id:'LG610',no:'PU-AH26-LG610',buyer:'Puma',style:'Training Legging',color:'Black',qty:5400,fob:7.8,crd:41,cut:2000,stitched:600,packed:0,status:'On machine',fabricPo:'ARV/PO/2026/0462',supplier:'Arvind Mills',smv:14.2},
+  ];
+  const allocs=[
+    {id:'a1',order:'TR114',line:7,start:-14,end:16,qty:7200,perDay:280},
+    {id:'a2',order:'TR114',line:8,start:-14,end:6,qty:4800,perDay:280},
+    {id:'a3',order:'RN220',line:8,start:7,end:37,qty:6000,perDay:230},
+    {id:'a4',order:'HD307',line:3,start:-20,end:5,qty:4800,perDay:190},
+    {id:'a5',order:'TS433',line:5,start:-18,end:3,qty:7500,perDay:360},
+    {id:'a6',order:'LG610',line:9,start:-6,end:24,qty:5400,perDay:180},
+    {id:'a7',order:'TK118',line:10,start:4,end:30,qty:3200,perDay:120},
+    {id:'a8',order:'SH209',line:1,start:-34,end:-6,qty:15000,perDay:520},
+    {id:'a9',order:'PL552',line:1,start:9,end:46,qty:9000,perDay:240},
+  ];
+  const fabric=[
+    {order:'TR114',part:'Body',shade:'N-2231 Collegiate Navy',booked:3900,received:3500,pl:'SGT/PL/4471',status:'short'},
+    {order:'TR114',part:'Body',shade:'W-2232 White',booked:2600,received:2600,pl:'SGT/PL/4471',status:'ok'},
+    {order:'TR114',part:'Body',shade:'R-2233 Solar Red',booked:1300,received:1300,pl:'SGT/PL/4471',status:'ok'},
+    {order:'RN220',part:'Body',shade:'K-0901 Black',booked:2900,received:2900,pl:'VTX/PL/2210',status:'ok'},
+    {order:'RN220',part:'Panel',shade:'L-0442 Fizzy Lime',booked:900,received:0,pl:'—',status:'transit',eta:3},
+    {order:'TK118',part:'Shell',shade:'K-0901 Black',booked:2400,received:2400,pl:'VTX/PL/2214',status:'ok'},
+    {order:'PL552',part:'Body',shade:'R-1140 Vector Red',booked:5600,received:0,pl:'—',status:'booked',eta:9},
+    {order:'LG610',part:'Body',shade:'K-7710 Black',booked:3100,received:3100,pl:'ARV/PL/0962',status:'ok'},
+  ];
+  const tasks=[
+    {id:'t1',title:'Re-check marker avg on 68" width before cutting navy balance',order:'TR114',who:'imran',due:-3,st:'done'},
+    {id:'t2',title:'Roll plan for N-2231 — cover 646 pcs shortfall',order:'TR114',who:'imran',due:4,st:'doing'},
+    {id:'t3',title:'Adidas: confirm print strike-off rev 3 in writing',order:'TR114',who:'kavita',due:-6,st:'done'},
+    {id:'t4',title:'Adidas: ask for 2-day ex-factory tolerance on TR114',order:'TR114',who:'kavita',due:-2,st:'review'},
+    {id:'t5',title:'Balance Line 8 operators after TR114 releases',order:'TR114',who:'ramesh',due:-1,st:'todo'},
+    {id:'t6',title:'Daily production report on the app by 7 pm',order:'TR114',who:'sanjay',due:1,st:'doing'},
+    {id:'t7',title:'Puma RN220: Line 8 plan ends after CRD — move to Line 12?',order:'RN220',who:'imran',due:0,st:'todo'},
+    {id:'t8',title:'Lime panel fabric for RN220 — chase Vardhman dispatch',order:'RN220',who:'ramesh',due:2,st:'todo'},
+  ];
+  const ledger=[
+    {d:-12,t:'09:40',who:'Planning',what:'PPM for AD-SS26-TR114 closed. 12 decisions, 6 follow-ups.'},
+    {d:-2,t:'17:05',who:'Shree Ganesh Textiles',what:'Packing list SGT/PL/4471 received by email. 3 shades, 123 rolls.'},
+    {d:-1,t:'11:20',who:'Meson',what:'SGT/PL/4471 parsed. Navy N-2231 3,500 m vs 3,900 m booked. 646 bodies cannot be cut.'},
+    {d:-1,t:'19:02',who:'Sanjay Shukla',what:'Daily production report, 8 entries. Line 8 under plan by 40 pcs on TR114.'},
+    {d:0,t:'07:30',who:'Meson',what:'Puma PU-AH26-RN220 on Line 8 now finishes 3 days after CRD. Line 12 is free from today.'},
+  ];
+  const chat=[
+    {who:'mahesh',t:'17:05',d:-2,text:'Packing list for PO 0912 attached. Dispatching tomorrow morning.',att:'SGT_PL_4471.pdf'},
+    {who:'meson',t:'11:20',d:-1,text:'Read the packing list. Navy N-2231 is 3,500 m against 3,900 m booked, 400 m short. White and red match. That is 646 navy bodies we cannot cut on the current marker.',quick:['Wait for mill balance','Pull rolls from Plant 1','Re-mark navy at 0.59']},
+    {who:'sanjay',t:'19:02',d:-1,text:'Daily report in. Line 7: 300. Line 8: 240 on TR114, lost 40 to a needle change. Lines 3 and 5 on plan.'},
+    {who:'meson',t:'19:03',d:-1,text:'Logged, 8 entries. TR114 is at 6,600 stitched of 12,000. Line 7 still finishes 16 Dec; Line 8 slips a day but releases before Puma loads.'},
+    {who:'meson',t:'07:30',d:0,text:'Morning. Two things need you:\n1. Puma RN220 on Line 8 ends 3 days after its CRD.\n2. The TR114 navy shortfall is still open.\nLine 12 is free from today; moving RN220 there lands 5 days early.',quick:['Move RN220 to Line 12','Show the plan','What else is late?']},
+  ];
+  return {people,orders,allocs,fabric,tasks,ledger,chat,resolved:{},loggedIn:false,read:{chat:0}};
+}
+
+/* ===================== state ===================== */
+let S;
+function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);return}}catch(e){}S=seed()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function log(who,what){S.ledger.push({d:0,t:nowHM(),who,what});save()}
+const order=id=>S.orders.find(o=>o.id===id);
+const ordersAllocs=id=>S.allocs.filter(a=>a.order===id);
+const lineName=l=>'Line '+l;
+function earliestFree(line,len,excludeId,from=0){const others=S.allocs.filter(a=>a.line===line&&a.id!==excludeId);for(let s=from;s<200;s++){const e=s+len;if(!others.some(a=>a.start<=e&&a.end>=s))return s}return from}
+
+function orderRisk(o){
+  const al=ordersAllocs(o.id);const end=al.length?Math.max(...al.map(a=>a.end)):null;
+  const fab=S.fabric.filter(f=>f.order===o.id&&f.status==='short'&&!S.resolved['fab:'+o.id]);
+  if(o.status==='Dispatched')return {k:'ok',l:'Dispatched'};
+  if(end!==null&&end>o.crd)return {k:'bad',l:`Ends ${end-o.crd}d after CRD`};
+  if(fab.length)return {k:'warn',l:'Fabric short'};
+  if(end!==null&&o.crd-end<=1)return {k:'warn',l:'No buffer'};
+  return {k:'ok',l:'On track'};
+}
+function needs(){
+  const out=[];
+  const rn=order('RN220');const rnAl=ordersAllocs('RN220')[0];
+  if(rnAl&&rnAl.end>rn.crd)out.push({k:'bad',ic:'!',t:'Puma RN220 finishes after its ship date',s:`${lineName(rnAl.line)} plan ends ${fmtD(rnAl.end)}; CRD is ${fmtD(rn.crd)}. Line 12 is free from today and would finish ${fmtD(earliestFree(12,rnAl.end-rnAl.start,rnAl.id)+rnAl.end-rnAl.start)}.`,acts:[{l:'Move to Line 12',fn:'moveRN',p:true},{l:'Open plan',href:'#/plan'}]});
+  if(!S.resolved['fab:TR114'])out.push({k:'warn',ic:'−',t:'TR114 navy fabric 400 m short',s:'SGT/PL/4471 shows 3,500 m of N-2231 against 3,900 m booked. 646 bodies can\'t be cut as planned. Ex-factory has no buffer.',acts:[{l:'Pull 2 rolls from Plant 1',fn:'fabPull',p:true},{l:'Wait 6 days for mill balance',fn:'fabWait'},{l:'Re-mark navy at 0.59',fn:'fabRemark'}]});
+  const late=S.tasks.filter(t=>t.st!=='done'&&t.due<0);
+  if(late.length)out.push({k:'gray',ic:late.length,t:`${late.length} follow-up${late.length>1?'s':''} past due`,s:late.map(t=>`${S.people[t.who].split(' ')[0]}: ${t.title}`).join(' · '),acts:[{l:'Nudge owners',fn:'nudge'},{l:'Open follow-ups',href:'#/tasks'}]});
+  return out;
+}
+const unreadChat=()=>Math.max(0,S.chat.length-(S.read.chat||0));
+
+/* ===================== actions ===================== */
+const ACT={
+  moveRN(){const a=ordersAllocs('RN220')[0];if(!a)return;const len=a.end-a.start;a.line=12;a.start=earliestFree(12,len,a.id);a.end=a.start+len;const o=order('RN220');log('You',`Moved ${o.no} to Line 12. Plan now ends ${fmtD(a.end)}, ${o.crd-a.end} days before CRD.`);S.chat.push({who:'meson',t:nowHM(),d:0,text:`Done. RN220 is on Line 12, ${fmtD(a.start)} to ${fmtD(a.end)}. Line 8 keeps TR114 only. I've told Imran and closed his task.`});const t=S.tasks.find(t=>t.id==='t7');if(t)t.st='done';save();toast('RN220 moved to <b>Line 12</b>. Ships 5 days early.');route()},
+  fabWait(){S.resolved['fab:TR114']='wait';log('You','Accepted mill re-dispatch of 400 m navy in 6 days. Navy cutting paused on the balance; Kavita to ask Adidas for 2-day tolerance.');S.chat.push({who:'meson',t:nowHM(),d:0,text:'Noted. I\'ve asked Shree Ganesh for a dated commitment on the 400 m and moved Kavita\'s tolerance request to the top. Navy cutting of the last 646 bodies is held.'});const t=S.tasks.find(t=>t.id==='t4');if(t)t.st='doing';save();toast('Waiting on the mill. <b>Kavita</b> asked for 2-day tolerance.');route()},
+  fabPull(){S.resolved['fab:TR114']='pull';log('You','Approved transfer of 2 rolls N-2231 (≈430 m) from Plant 1. Covers the 646-piece shortfall; TR114 stays on its ex-factory.');S.chat.push({who:'meson',t:nowHM(),d:0,text:'Transfer raised: 2 rolls of N-2231 from Plant 1, pickup tomorrow 9 am. Shade check against lot N-2231 before cutting. TR114 keeps its ex-factory date.'});const f=S.fabric.find(f=>f.order==='TR114'&&f.status==='short');if(f)f.received=3930;const t=S.tasks.find(t=>t.id==='t2');if(t)t.st='done';save();toast('Transfer raised from Plant 1. <b>TR114 holds its date.</b>');route()},
+  fabRemark(){S.resolved['fab:TR114']='remark';log('You','Approved re-marking navy bodies at 0.59 avg. Saves ≈190 m; remaining 210 m covered by the mill balance.');S.chat.push({who:'meson',t:nowHM(),d:0,text:'Imran is re-running the navy marker at 0.59. That recovers about 190 m; the rest comes from the mill balance, which I\'ve chased. Cutting continues on white and red meanwhile.'});save();toast('Re-mark approved. <b>Imran</b> notified.');route()},
+  nudge(){const late=S.tasks.filter(t=>t.st!=='done'&&t.due<0);late.forEach(t=>log('Meson',`Nudged ${S.people[t.who]} on "${t.title}".`));S.chat.push({who:'meson',t:nowHM(),d:0,text:`Pinged ${late.map(t=>S.people[t.who].split(' ')[0]).join(', ')} with their open items. I'll surface replies here.`});save();toast(`Nudged ${late.length} owner${late.length>1?'s':''}.`);route()},
+};
+
+/* ===================== router ===================== */
+function route(){
+  if(!S.loggedIn){$('#login').classList.remove('hide');$('#app').classList.add('hide');return}
+  $('#login').classList.add('hide');$('#app').classList.remove('hide');
+  const h=location.hash.replace(/^#\//,'')||'today';const [r,id]=h.split('/');
+  $$('.nav').forEach(a=>a.classList.toggle('on',a.dataset.r===r));
+  const badge=(sel,v,hide)=>{const e=$(sel);e.textContent=v||'';e.classList.toggle('hide',!v||!!hide)};
+  badge('#nToday',needs().length);
+  badge('#nFab',S.fabric.filter(f=>f.status==='short'&&!S.resolved['fab:'+f.order]).length);
+  badge('#nTasks',S.tasks.filter(t=>t.st!=='done'&&t.due<=0).length);
+  badge('#nChat',unreadChat(),r==='thread');
+  const m=$('#main');
+  ({today:vToday,orders:vOrders,plan:vPlan,fabric:vFabric,tasks:vTasks,thread:vThread}[r]||vToday)(m,id);
+}
+
+/* ===================== views ===================== */
+const head=(t,s,right='')=>`<div class="top"><div><h1 class="serif">${t}</h1><div class="sub">${s}</div></div><div>${right}</div></div>`;
+const feed=(evs)=>evs.map(e=>`<div class="ev"><div class="w">${e.d===0?'today':fmtD(e.d)}<br>${e.t}</div><div><span class="who">${esc(e.who)}</span> · ${esc(e.what)}</div></div>`).join('');
+
+function vToday(m){
+  const val=o=>o.qty*o.fob*83/1e5;
+  const booked=S.orders.reduce((a,o)=>a+val(o),0);
+  const packed=S.orders.reduce((a,o)=>a+o.packed*o.fob*83/1e5,0);
+  const riskO=S.orders.filter(o=>orderRisk(o).k!=='ok');
+  const risk=riskO.reduce((a,o)=>a+(o.qty-o.packed)*o.fob*83/1e5,0);
+  const nd=needs();
+  m.innerHTML=head(`${TODAY.toLocaleDateString('en-GB',{weekday:'long'})}, Plant 2`,`${fmt(TODAY)} · ${S.allocs.filter(a=>a.start<=0&&a.end>=0).length} lines running · ${S.orders.filter(o=>o.status!=='Dispatched').length} live orders`)+
+  `<div class="grid g4" style="margin-bottom:14px">
+    <div class="card kpi"><div class="cap">Order book</div><div class="v">${inr(booked)}</div><div class="d">${S.orders.length} orders · ${n(S.orders.reduce((a,o)=>a+o.qty,0))} pcs</div></div>
+    <div class="card kpi"><div class="cap">Packed</div><div class="v">${inr(packed)}</div><div class="d">${Math.round(packed/booked*100)}% of book</div></div>
+    <div class="card kpi"><div class="cap">Pending</div><div class="v">${inr(booked-packed)}</div><div class="d">across ${S.orders.filter(o=>o.packed<o.qty).length} orders</div></div>
+    <div class="card kpi"><div class="cap">At risk</div><div class="v" style="color:${risk?'var(--bad)':'var(--ok)'}">${inr(risk)}</div><div class="d">${risk?riskO.map(o=>o.id).join(', '):'nothing flagged'}</div></div>
+  </div>
+  <div class="grid g2" style="grid-template-columns:1.25fr 1fr">
+    <div class="card"><div class="hd"><h3>Needs you now</h3><span class="cap">${nd.length} open</span></div>
+      ${nd.length?nd.map(x=>`<div class="need"><div class="ic pill ${x.k}" style="border-radius:9px">${x.ic}</div><div style="flex:1"><div class="t">${x.t}</div><div class="s">${x.s}</div><div class="acts">${x.acts.map(a=>a.href?`<a class="btn sm" href="${a.href}">${a.l}</a>`:`<button class="btn sm ${a.p?'primary':''}" data-act="${a.fn}">${a.l}</button>`).join('')}</div></div></div>`).join(''):`<div class="empty">Nothing needs you. The plant is running the plan.<br><span style="font-size:12px">Reset the demo from the sidebar to replay the week.</span></div>`}
+    </div>
+    <div class="card"><div class="hd"><h3>What happened</h3><span class="cap">ledger</span></div>${feed([...S.ledger].reverse().slice(0,9))}</div>
+  </div>
+  <div class="card" style="margin-top:14px"><div class="hd"><h3>Live orders</h3><a class="btn sm" href="#/orders">All orders</a></div>
+  <table><thead><tr><th>Order</th><th>Buyer · style</th><th class="num">Qty</th><th>Progress</th><th>Ex-factory</th><th>Status</th></tr></thead><tbody>
+  ${S.orders.filter(o=>o.status!=='Dispatched').sort((a,b)=>a.crd-b.crd).map(o=>{const r=orderRisk(o);return `<tr class="row" data-o="${o.id}"><td class="mono">${o.no}</td><td>${o.buyer} · ${o.style}</td><td class="num">${n(o.qty)}</td><td style="min-width:160px"><div class="bar"><i style="width:${o.stitched/o.qty*100}%"></i><i class="ok" style="width:${o.packed/o.qty*100}%"></i></div><div style="font-size:11px;color:var(--faint);margin-top:4px">${n(o.stitched)} stitched · ${n(o.packed)} packed</div></td><td>${fmtD(o.crd)} <span style="color:var(--faint)">(${o.crd}d)</span></td><td><span class="pill ${r.k}">${r.l}</span></td></tr>`}).join('')}
+  </tbody></table></div>`;
+}
+
+function vOrders(m,id){
+  m.innerHTML=head('Orders',`${S.orders.length} orders · ${n(S.orders.reduce((a,o)=>a+o.qty,0))} pieces`,`<button class="btn" id="newOrder">+ New order</button>`)+
+  `<div class="card" style="overflow:auto"><table><thead><tr><th>Order</th><th>Buyer</th><th>Style</th><th class="num">Qty</th><th class="num">Cut</th><th class="num">Stitched</th><th class="num">Packed</th><th>Lines</th><th>Ex-factory</th><th>Status</th></tr></thead><tbody>
+  ${[...S.orders].sort((a,b)=>a.crd-b.crd).map(o=>{const r=orderRisk(o);const ls=ordersAllocs(o.id).map(a=>a.line);return `<tr class="row" data-o="${o.id}"><td class="mono">${o.no}</td><td>${o.buyer}</td><td>${o.style}<div style="color:var(--faint);font-size:11.5px">${o.color}</div></td><td class="num">${n(o.qty)}</td><td class="num">${n(o.cut)}</td><td class="num">${n(o.stitched)}</td><td class="num">${n(o.packed)}</td><td>${ls.length?ls.map(l=>`<span class="pill gray">L${l}</span>`).join(' '):'<span style="color:var(--faint)">—</span>'}</td><td>${fmtD(o.crd)}</td><td><span class="pill ${r.k}">${r.l}</span></td></tr>`}).join('')}
+  </tbody></table></div>`;
+  $('#newOrder').onclick=()=>{const no=prompt('Buyer PO number (e.g. AD-SS26-TR120)');if(!no)return;const qty=+prompt('Quantity (pcs)','6000')||6000;const id=no.split('-').pop().slice(0,6).toUpperCase();if(order(id))return toast('That order already exists.');S.orders.push({id,no,buyer:no.startsWith('PU')?'Puma':no.startsWith('RB')?'Reebok':no.startsWith('DC')?'Decathlon':'Adidas',style:'New style',color:'TBC',qty,fob:5,crd:45,cut:0,stitched:0,packed:0,status:'Fabric booked',fabricPo:'—',supplier:'—',smv:10});log('You',`Created order ${no}, ${n(qty)} pcs, CRD ${fmtD(45)}.`);save();toast(`Order <b>${esc(no)}</b> created.`);route()};
+  if(id&&order(id))openOrder(id);
+}
+function openOrder(id,tab='summary'){
+  const o=order(id);if(!o)return;const r=orderRisk(o);const al=ordersAllocs(id);const fab=S.fabric.filter(f=>f.order===id);const tk=S.tasks.filter(t=>t.order===id);
+  const lg=S.ledger.filter(e=>e.what.includes(o.no)||e.what.includes(o.id));
+  $$('.drawer').forEach(d=>d.remove());
+  const d=document.createElement('div');d.className='drawer';
+  const body=tab==='fabric'?(fab.length?`<div style="overflow:auto"><table><thead><tr><th>Part</th><th>Shade</th><th class="num">Booked m</th><th class="num">Received m</th><th>Packing list</th><th>Status</th></tr></thead><tbody>${fab.map(fabRow).join('')}</tbody></table></div>`:'<div class="empty">No fabric lines yet.</div>')
+   :tab==='tasks'?(tk.length?tk.map(t=>`<div class="tk" style="cursor:default"><div class="t">${esc(t.title)}</div><div class="m"><span><span class="av">${initials(S.people[t.who])}</span> &nbsp;${S.people[t.who]}</span><span>${stPill(t)}</span></div></div>`).join(''):'<div class="empty">No follow-ups.</div>')
+   :tab==='ledger'?(lg.length?feed([...lg].reverse()):'<div class="empty">Nothing recorded yet.</div>')
+   :`<div class="grid g2"><div><div class="cap">Lines</div>${al.length?al.map(a=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)"><b>${lineName(a.line)}</b> · ${fmtD(a.start)} → ${fmtD(a.end)} · ${n(a.qty)} pcs · ${a.perDay}/day</div>`).join(''):'<div style="color:var(--faint);padding:8px 0">Not planned</div>'}</div>
+     <div><div class="cap">Commercial</div><div style="padding:8px 0;border-bottom:1px solid var(--line)">FOB $${o.fob.toFixed(2)} · value ${inr(o.qty*o.fob*83/1e5)}</div><div style="padding:8px 0;border-bottom:1px solid var(--line)">Fabric PO ${o.fabricPo}<br><span style="color:var(--mute)">${o.supplier}</span></div><div style="padding:8px 0">SMV ${o.smv}</div></div></div>`;
+  d.innerHTML=`<div class="pane"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><div class="cap">${o.buyer} · ${o.style}</div><h2 class="serif" style="margin:4px 0 6px;font-size:28px">${o.no}</h2><div style="color:var(--mute)">${o.color} · ${n(o.qty)} pcs · ex-factory <b style="color:var(--fg)">${fmtD(o.crd)}</b> &nbsp;<span class="pill ${r.k}">${r.l}</span></div></div><button class="btn sm" data-close>Close</button></div>
+  <div class="stages">${[['Cut',o.cut],['Loaded',Math.min(o.cut,o.stitched+Math.round(o.qty*.2))],['Stitched',o.stitched],['Packed',o.packed]].map(([k,v])=>`<div class="stage"><div class="cap">${k}</div><div class="v">${n(v)}</div><div class="bar" style="margin-top:8px"><i class="${k==='Packed'?'ok':''}" style="width:${v/o.qty*100}%"></i></div></div>`).join('')}</div>
+  <div class="tabs">${['summary','fabric','tasks','ledger'].map(t=>`<button class="tab ${t===tab?'on':''}" data-tab="${t}">${t[0].toUpperCase()+t.slice(1)}${t==='fabric'&&fab.some(f=>f.status==='short')&&!S.resolved['fab:'+id]?' <span class="pill warn" style="padding:0 6px">!</span>':''}</button>`).join('')}</div>
+  ${body}
+  <div style="margin-top:22px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-log>Log production</button><button class="btn sm" data-task>Add follow-up</button><a class="btn sm" href="#/plan" data-close>Open on plan</a></div></div>`;
+  d.addEventListener('click',e=>{
+    if(e.target===d||e.target.closest('[data-close]')){d.remove();if(!e.target.closest('a'))history.replaceState(null,'','#/orders');return}
+    const t=e.target.closest('.tab');if(t){openOrder(id,t.dataset.tab);return}
+    const a=e.target.closest('[data-act]');if(a){ACT[a.dataset.act]();d.remove();return}
+    if(e.target.closest('[data-log]')){const q=+prompt(`Stitched today on ${o.no}?`,'300');if(q){o.stitched=Math.min(o.qty,o.stitched+q);log('You',`Logged ${n(q)} stitched on ${o.no}. Now ${n(o.stitched)} of ${n(o.qty)}.`);save();toast(`${n(q)} stitched logged on <b>${o.id}</b>.`);openOrder(id);route()}}
+    if(e.target.closest('[data-task]')){const title=prompt('Follow-up');if(title){S.tasks.push({id:'t'+Date.now(),title,order:id,who:'imran',due:3,st:'todo'});log('You',`Added follow-up on ${o.no}: ${title}`);save();toast('Follow-up added for <b>Imran</b>.');openOrder(id,'tasks');route()}}
+  });
+  document.body.appendChild(d);
+}
+const stPill=t=>t.st==='done'?'<span class="pill ok">Done</span>':t.due<0?`<span class="pill bad">${-t.due}d late</span>`:t.due===0?'<span class="pill warn">Due today</span>':`<span class="pill gray">Due ${fmtD(t.due)}</span>`;
+function fabRow(f){const res=S.resolved['fab:'+f.order];const st=f.status==='short'&&res?'<span class="pill ok">Resolved · '+({wait:'mill balance',pull:'Plant 1 rolls',remark:'re-marked'}[res])+'</span>':f.status==='short'?'<span class="pill bad">Short '+n(f.booked-f.received)+' m</span>':f.status==='transit'?`<span class="pill blue">In transit · ${fmtD(f.eta)}</span>`:f.status==='booked'?`<span class="pill gray">Booked · ETA ${fmtD(f.eta)}</span>`:'<span class="pill ok">Received</span>';
+  return `<tr><td>${f.part}</td><td>${f.shade}</td><td class="num">${n(f.booked)}</td><td class="num">${n(f.received)}</td><td class="mono" style="font-size:12px">${f.pl}</td><td>${st}${f.status==='short'&&!res?` <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm primary" data-act="fabPull">Pull from Plant 1</button><button class="btn sm" data-act="fabWait">Wait for mill</button><button class="btn sm" data-act="fabRemark">Re-mark</button></div>`:''}</td></tr>`}
+
+/* ---- plan / gantt ---- */
+const G={from:-16,to:48,cw:30,lab:120};
+let selBar=null;
+function vPlan(m){
+  const lines=[1,2,3,4,5,6,7,8,9,10,11,12];const days=[];for(let d=G.from;d<=G.to;d++)days.push(d);
+  const x=d=>G.lab+(d-G.from)*G.cw;
+  m.innerHTML=head('Plan',`12 lines · ${fmtD(G.from)} to ${fmtD(G.to)} · drag a strip to another line or along the calendar`,`<span class="ginfo"><span class="pill bad">ends after CRD</span><span class="pill" style="background:#111;color:#fff">on plan</span><span class="pill gray">finished</span></span>`)+
+  `<div class="gantt" id="gantt"><div class="gwrap">
+    <div class="ghead"><div class="lab"></div>${days.map(d=>`<div class="d ${wd(d)?'sun':''} ${d===0?'today':''}">${dayAt(d).getDate()}<span>${d===0?'today':dayAt(d).toLocaleDateString('en-GB',{weekday:'narrow'})}</span></div>`).join('')}</div>
+    ${lines.map(l=>{const al=S.allocs.filter(a=>a.line===l);return `<div class="grow" data-line="${l}"><div class="lab">${lineName(l)}${al.some(a=>a.start<=0&&a.end>=0)?'':' <small>free</small>'}</div><div class="cells">${days.map(d=>`<div class="c ${wd(d)?'sun':''}"></div>`).join('')}</div>
+      ${al.map(a=>{const o=order(a.order);return `<div class="crd" data-l="CRD ${o.id}" style="left:${x(o.crd)+G.cw}px"></div>`}).join('')}
+      ${al.map(a=>{const o=order(a.order);const risk=a.end>o.crd;const done=a.end<0;return `<div class="gbar ${risk?'risk':done?'done':''} ${selBar===a.id?'sel':''}" data-a="${a.id}" style="left:${x(a.start)}px;width:${(a.end-a.start+1)*G.cw-4}px"><span class="l">${o.buyer} ${o.id}<span class="q">${n(a.qty)}</span></span></div>`}).join('')}
+    </div>`}).join('')}
+    <div class="todayline" style="left:${x(0)+G.cw/2}px"></div>
+  </div></div>
+  <div class="ginfo" id="ginfo">${selBar?barInfo(selBar):'Click a strip for detail. Drag <b>Puma RN220</b> (red) from Line 8 down to Line 12 to clear the risk.'}</div>`;
+  const gantt=$('#gantt');gantt.scrollLeft=Math.max(0,(0-G.from-5)*G.cw);
+  let drag=null;
+  gantt.addEventListener('pointerdown',e=>{const b=e.target.closest('.gbar');if(!b)return;const a=S.allocs.find(z=>z.id===b.dataset.a);drag={a,b,x0:e.clientX,y0:e.clientY,start:a.start,line:a.line,moved:false};b.setPointerCapture(e.pointerId);b.classList.add('drag')});
+  gantt.addEventListener('pointermove',e=>{if(!drag)return;const dx=Math.round((e.clientX-drag.x0)/G.cw);const dy=Math.round((e.clientY-drag.y0)/46);if(dx||dy)drag.moved=true;const len=drag.a.end-drag.a.start;drag.a.start=drag.start+dx;drag.a.end=drag.a.start+len;drag.a.line=Math.min(12,Math.max(1,drag.line+dy));drag.b.style.left=x(drag.a.start)+'px';const row=$(`.grow[data-line="${drag.a.line}"]`,gantt);if(row&&drag.b.parentElement!==row)row.appendChild(drag.b)});
+  gantt.addEventListener('pointerup',()=>{if(!drag)return;const {a,moved}=drag;drag.b.classList.remove('drag');const o=order(a.order);
+    if(moved&&a.line!==drag.line&&drag.start>0){const len=a.end-a.start;const s0=earliestFree(a.line,len,a.id);if(s0<a.start){a.start=s0;a.end=s0+len}}
+    if(moved&&(a.line!==drag.line||a.start!==drag.start)){const late=a.end-o.crd;log('You',`Moved ${o.no} to ${lineName(a.line)}, ${fmtD(a.start)} → ${fmtD(a.end)}${late>0?` (still ${late}d after CRD)`:` (${-late}d before CRD)`}.`);
+      if(a.order==='RN220'&&late<=0){const t=S.tasks.find(t=>t.id==='t7');if(t)t.st='done';S.chat.push({who:'meson',t:nowHM(),d:0,text:`Saw the move: RN220 on ${lineName(a.line)}, ends ${fmtD(a.end)}, ${-late} days before CRD. Closed Imran's task and told Sanjay the changeover is off Line 8.`})}
+      toast(`${o.id} → <b>${lineName(a.line)}</b>${a.start!==drag.start?`, starts ${fmtD(a.start)}`:''}, ends ${fmtD(a.end)}${late>0?' · still late':' · before CRD'}`)}
+    selBar=a.id;drag=null;save();route()});
+}
+function barInfo(id){const a=S.allocs.find(z=>z.id===id);if(!a)return'';const o=order(a.order);const late=a.end-o.crd;return `<b>${o.no}</b> · ${lineName(a.line)} · ${fmtD(a.start)} → ${fmtD(a.end)} · ${n(a.qty)} pcs at ${a.perDay}/day · CRD ${fmtD(o.crd)} · ${late>0?`<span class="pill bad">${late}d after CRD</span>`:`<span class="pill ok">${-late}d buffer</span>`} <a href="#/orders/${o.id}" class="btn sm">Open order</a>`}
+
+/* ---- fabric ---- */
+function vFabric(m){
+  const open=S.fabric.filter(f=>f.status==='short'&&!S.resolved['fab:'+f.order]).length;
+  m.innerHTML=head('Fabric',`${S.fabric.length} booking lines · ${n(S.fabric.reduce((a,f)=>a+f.booked,0))} m booked · ${open?`<span style="color:var(--bad)">${open} shortfall open</span>`:'no shortfalls open'}`)+
+  `<div class="card" style="overflow:auto"><div class="hd"><h3>Bookings vs receipts</h3><span class="cap">from mill packing lists</span></div>
+  <table><thead><tr><th>Order</th><th>Part</th><th>Shade</th><th class="num">Booked m</th><th class="num">Received m</th><th>Packing list</th><th>Status</th></tr></thead><tbody>
+  ${S.fabric.map(f=>fabRow(f).replace('<tr>',`<tr><td class="mono">${order(f.order).no}</td>`)).join('')}
+  </tbody></table></div>
+  <div class="card" style="margin-top:14px"><div class="hd"><h3>How this arrived</h3><span class="cap">SGT/PL/4471</span></div><div class="bd" style="color:var(--mute);line-height:1.6">Mahesh at Shree Ganesh emailed the packing list as a PDF on ${fmtD(-2)}. Meson read it, matched the three shades to the booking on PO SGT/PO/2026/0912, and flagged the navy gap the same morning, before the truck left. The fix options above are the ones a planning head would otherwise work out by phone.</div></div>`;
+}
+
+/* ---- tasks ---- */
+function vTasks(m){
+  const cols=[['todo','To do'],['doing','In progress'],['review','In review'],['done','Done']];
+  m.innerHTML=head('Follow-ups',`${S.tasks.filter(t=>t.st!=='done').length} open · ${S.tasks.filter(t=>t.st!=='done'&&t.due<0).length} past due · drag between columns`,`<button class="btn" id="addTask">+ Follow-up</button>`)+
+  `<div class="kanban">${cols.map(([k,l])=>`<div class="col" data-st="${k}"><div class="ch">${l}<span>${S.tasks.filter(t=>t.st===k).length}</span></div>${S.tasks.filter(t=>t.st===k).sort((a,b)=>a.due-b.due).map(t=>`<div class="tk" draggable="true" data-t="${t.id}"><div class="t">${esc(t.title)}</div><div class="m"><span><span class="av" title="${S.people[t.who]}">${initials(S.people[t.who])}</span> &nbsp;<span class="mono" style="font-size:11px">${order(t.order)?order(t.order).id:''}</span></span>${stPill(t)}</div></div>`).join('')}</div>`).join('')}</div>`;
+  let dragging=null;
+  $$('.tk',m).forEach(el=>{el.addEventListener('dragstart',e=>{dragging=el.dataset.t;el.classList.add('drag');e.dataTransfer.effectAllowed='move'});el.addEventListener('dragend',()=>el.classList.remove('drag'))});
+  $$('.col',m).forEach(c=>{c.addEventListener('dragover',e=>{e.preventDefault();c.classList.add('over')});c.addEventListener('dragleave',()=>c.classList.remove('over'));c.addEventListener('drop',e=>{e.preventDefault();c.classList.remove('over');const t=S.tasks.find(t=>t.id===dragging);if(!t||t.st===c.dataset.st)return;t.st=c.dataset.st;log('You',`Moved "${t.title}" to ${cols.find(x=>x[0]===t.st)[1]}.`);if(t.st==='done')toast(`Closed: <b>${esc(t.title.slice(0,40))}…</b>`);save();route()})});
+  $('#addTask').onclick=()=>{const title=prompt('Follow-up');if(!title)return;const who=(prompt('Owner: sanjay / imran / kavita / ramesh','imran')||'imran').toLowerCase();S.tasks.push({id:'t'+Date.now(),title,order:'TR114',who:S.people[who]?who:'imran',due:3,st:'todo'});log('You',`Added follow-up: ${title}`);save();route()};
+}
+
+/* ---- thread ---- */
+function vThread(m){
+  S.read.chat=S.chat.length;save();
+  m.innerHTML=head('Thread','Plant 2 · planning group · Meson reads every message and answers in the same place')+
+  `<div class="thread"><div class="chat"><div class="chd"><span class="av" style="background:#111;color:#fff">P2</span><div><b>Plant 2 · Planning</b><div style="font-size:11.5px;color:var(--mute)">Sanjay, Imran, Kavita, Ramesh, Mahesh (SGT), Meson</div></div></div>
+    <div class="msgs" id="msgs">${S.chat.map(msgHTML).join('')}</div>
+    <form class="in" id="chatForm"><input id="chatIn" placeholder="Ask about an order, move a line, assign a follow-up…" autocomplete="off"><button class="btn primary" type="submit">Send</button></form></div>
+   <div class="card hints"><div class="hd"><h3>Try</h3></div>
+     <button data-q="status TR114"><span class="cap">status</span>status TR114</button>
+     <button data-q="what's late?"><span class="cap">overview</span>what's late?</button>
+     <button data-q="move RN220 to line 12"><span class="cap">plan</span>move RN220 to line 12</button>
+     <button data-q="can TR114 ship on time?"><span class="cap">question</span>can TR114 ship on time?</button>
+     <button data-q="line 8 did 260 today on TR114"><span class="cap">floor report</span>line 8 did 260 today on TR114</button>
+     <button data-q="ask Kavita to confirm the Adidas tolerance by Friday"><span class="cap">assign</span>ask Kavita to confirm the Adidas tolerance by Friday</button>
+   </div></div>`;
+  const box=$('#msgs');box.scrollTop=1e9;
+  $('#chatForm').onsubmit=e=>{e.preventDefault();const v=$('#chatIn').value.trim();if(!v)return;$('#chatIn').value='';send(v)};
+  m.addEventListener('click',e=>{const q=e.target.closest('[data-q]');if(q)send(q.dataset.q)});
+}
+function msgHTML(c){const who=c.who==='meson'?'Meson':c.who==='you'?'':S.people[c.who]||c.who;return `<div class="msg ${c.who==='you'?'me':''}"><div class="who">${who}</div>${esc(c.text).replace(/\n/g,'<br>')}${c.att?`<pre>📎 ${esc(c.att)}</pre>`:''}${c.quick&&!c.used?`<div class="quick">${c.quick.map(q=>`<button data-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>`:''}<span class="tm">${c.d===0?'':fmtD(c.d)+' '}${c.t}</span></div>`}
+function send(text){
+  S.chat.forEach(c=>{if(c.quick&&c.quick.some(q=>q.toLowerCase()===text.toLowerCase()))c.used=true});
+  S.chat.push({who:'you',t:nowHM(),d:0,text});save();
+  const box=$('#msgs');if(box){box.innerHTML=S.chat.map(msgHTML).join('');box.scrollTop=1e9}
+  setTimeout(()=>{const r=reply(text);if(r)S.chat.push({who:'meson',t:nowHM(),d:0,...r});S.read.chat=S.chat.length;save();const b=$('#msgs');if(b){b.innerHTML=S.chat.map(msgHTML).join('');b.scrollTop=1e9}route()},650);
+}
+function reply(t){
+  const q=t.toLowerCase();
+  const oid=(q.match(/\b(tr114|rn220|hd307|tk118|pl552|sh209|ts433|lg610)\b/)||[])[1];
+  let mm=q.match(/line\s*(\d+)\s*(?:did|made|stitched)?\s*(\d{2,4})/);
+  if(mm){const o=order((oid||'tr114').toUpperCase());const qty=+mm[2];o.stitched=Math.min(o.qty,o.stitched+qty);log('Floor',`${lineName(+mm[1])} stitched ${n(qty)} on ${o.no} (via thread).`);const a=ordersAllocs(o.id).find(a=>a.line===+mm[1]);const vs=a?qty-a.perDay:0;return {text:`Logged ${n(qty)} stitched on ${o.no}, ${lineName(+mm[1])}. ${a?(vs>=0?`That's ${vs} over the ${a.perDay}/day plan.`:`That's ${-vs} under the ${a.perDay}/day plan; ${o.id} still ends ${fmtD(a.end)}.`):''} Total now ${n(o.stitched)} of ${n(o.qty)}.`}}
+  mm=q.match(/move\s+(\w+)\s+(?:to\s+)?line\s*(\d+)/);
+  if(mm){const o=order(mm[1].toUpperCase());const a=o&&ordersAllocs(o.id)[0];if(!a)return {text:`I don't have a strip for ${mm[1].toUpperCase()} on the plan yet.`};const L=+mm[2];const was=a.line;a.line=L;if(a.start>0){const len=a.end-a.start;const s0=earliestFree(L,len,a.id);if(s0<a.start){a.start=s0;a.end=s0+len}}if(o.id==='RN220'&&a.end<=o.crd){const tk=S.tasks.find(t=>t.id==='t7');if(tk)tk.st='done'}log('You',`Moved ${o.no} from ${lineName(was)} to ${lineName(L)} (via thread). Ends ${fmtD(a.end)}.`);const late=a.end-o.crd;return {text:`Moved ${o.id} to ${lineName(L)}, ${fmtD(a.start)} → ${fmtD(a.end)}. ${late>0?`Still ${late} days after CRD, so that alone doesn't fix it.`:`${-late} days before CRD. Risk cleared.`} It's on the plan if you want to drag it further.`,quick:['Show the plan']}}
+  if(/show.*plan|open.*plan|gantt/.test(q)){setTimeout(()=>location.hash='#/plan',400);return {text:'Opening the plan.'}}
+  if(/late|behind|risk|what else/.test(q)){const risky=S.orders.filter(o=>orderRisk(o).k!=='ok');const late=S.tasks.filter(t=>t.st!=='done'&&t.due<0);return {text:`${risky.length?`Orders at risk: ${risky.map(o=>`${o.id} (${orderRisk(o).l.toLowerCase()})`).join(', ')}.`:'No order is at risk right now.'}\n${late.length?`Past-due follow-ups: ${late.map(t=>`${S.people[t.who].split(' ')[0]} — ${t.title}`).join('; ')}.`:'No follow-ups are past due.'}`,quick:late.length?['Nudge owners']:[]}}
+  if(/nudge/.test(q)){ACT.nudge();return null}
+  mm=q.match(/(?:ask|tell|assign)\s+(sanjay|imran|kavita|ramesh)\s+(?:to\s+)?(.+?)(?:\s+by\s+(\w+))?$/);
+  if(mm){const who=mm[1];const title=(mm[2][0].toUpperCase()+mm[2].slice(1)).replace(/\b(adidas|puma|reebok|decathlon|tr114|rn220)\b/g,w=>({adidas:'Adidas',puma:'Puma',reebok:'Reebok',decathlon:'Decathlon'}[w]||w.toUpperCase()));const due=mm[3]?({friday:5,monday:1,tomorrow:1,today:0,thursday:4,wednesday:3,tuesday:2}[mm[3]]??3):3;S.tasks.push({id:'t'+Date.now(),title,order:oid?oid.toUpperCase():'TR114',who,due,st:'todo'});log('Meson',`Follow-up assigned to ${S.people[who]}: ${title}`);return {text:`Assigned to ${S.people[who]}: "${title}", due ${fmtD(due)}. It's on the board and in their thread.`,quick:['Open follow-ups']}}
+  if(/open.*follow|open.*tasks|board/.test(q)){setTimeout(()=>location.hash='#/tasks',400);return {text:'Opening follow-ups.'}}
+  if(/wait.*mill/.test(q)){ACT.fabWait();return null}
+  if(/plant 1|pull.*rolls/.test(q)){ACT.fabPull();return null}
+  if(/re-?mark/.test(q)){ACT.fabRemark();return null}
+  if(/ship|make the|on time|crd/.test(q)&&oid){const o=order(oid.toUpperCase());const al=ordersAllocs(o.id);const end=al.length?Math.max(...al.map(a=>a.end)):null;const fab=S.fabric.filter(f=>f.order===o.id&&f.status==='short'&&!S.resolved['fab:'+o.id]);return {text:`${o.no}, CRD ${fmtD(o.crd)}: ${end===null?'not on the plan yet.':end>o.crd?`no — the plan ends ${fmtD(end)}, ${end-o.crd} days late.`:`lines finish ${fmtD(end)}, ${o.crd-end} days before CRD.`} ${fab.length?`The risk is fabric: ${fab.map(f=>`${f.shade} is ${n(f.booked-f.received)} m short`).join('; ')}.`:'Fabric is covered.'} ${n(o.stitched)} of ${n(o.qty)} stitched, ${n(o.packed)} packed.`,quick:fab.length?['Pull rolls from Plant 1','Wait for mill balance']:[]}}
+  if(oid){const o=order(oid.toUpperCase());const al=ordersAllocs(o.id);const r=orderRisk(o);return {text:`${o.no} · ${o.buyer} ${o.style}\n${n(o.cut)} cut · ${n(o.stitched)} stitched · ${n(o.packed)} packed of ${n(o.qty)}\n${al.length?al.map(a=>`${lineName(a.line)}: ${fmtD(a.start)} → ${fmtD(a.end)}`).join(' · '):'Not planned'}\nEx-factory ${fmtD(o.crd)} · ${r.l}`,quick:[`can ${o.id} ship on time?`]}}
+  if(/^(hi|hello|hey|thanks)/.test(q))return {text:'Here. Ask me about any order, move something on the plan, or hand a follow-up to someone.'};
+  return {text:`I can read that, but I'd rather not guess. Try an order number (TR114, RN220), "what's late?", a floor report like "line 8 did 260 today", or "ask Kavita to …".`};
+}
+
+/* ===================== boot ===================== */
+load();
+$('#loginForm').onsubmit=e=>{e.preventDefault();const u=$('#email').value.trim().toLowerCase(),p=$('#pw').value;if(u===CREDS.u&&p===CREDS.p){S.loggedIn=true;save();$('#err').textContent='';location.hash='#/today';route();setTimeout(()=>toast('Welcome. <b>Two things need you</b> before the floor loads at 9.'),500)}else{$('#err').textContent='That\'s not it. Use the email and password from the application.'}};
+$('#logoutBtn').onclick=()=>{localStorage.removeItem(KEY);S=seed();location.hash='';route()};
+$('#resetBtn').onclick=()=>{S=seed();S.loggedIn=true;selBar=null;save();toast('Demo reset to Monday morning.');route()};
+document.addEventListener('click',e=>{if(e.target.closest('.drawer'))return;const a=e.target.closest('[data-act]');if(a){ACT[a.dataset.act]();return}const r=e.target.closest('tr.row');if(r){history.replaceState(null,'','#/orders/'+r.dataset.o);openOrder(r.dataset.o)}});
+window.addEventListener('hashchange',route);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$$('.drawer').forEach(d=>d.remove())});
+route();
+</script>
 </body>
 </html>
